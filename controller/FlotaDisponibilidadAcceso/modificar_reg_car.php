@@ -1,7 +1,7 @@
 <?php
 if (isset($_POST["btn-editar"])) {
     if (!empty($_POST["id"]) && !empty($_POST["nombre-vehiculo"]) && !empty($_POST["modelo-vehiculo"])) {
-        include("../Model/conexion.php");
+        include("../../models/FlotaDisponibilidadAcceso/conexion.php");
         $id = $_POST["id"]; 
         $nombre = $_POST["nombre-vehiculo"];
         $modelo = $_POST["modelo-vehiculo"];

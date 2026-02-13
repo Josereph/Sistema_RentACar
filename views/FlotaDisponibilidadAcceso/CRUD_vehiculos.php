@@ -10,8 +10,8 @@
     <div class="container-fluid p-4">
         <h1 class="text-center mb-4">CRUD Vehiculos</h1>
     <?php
-    include("../Model/conexion.php");
-    include("../Controller/eliminar_vehiculo.php");
+    include("../../models/FlotaDisponibilidadAcceso/conexion.php");
+    include("../../controller/FlotaDisponibilidadAcceso/eliminar_vehiculo.php");
     ?>
         <div class="d-flex justify-content-end mb-3">
             <button type="button" class="btn btn-dark" style="border-radius:0;" data-toggle="modal" data-target="#modalFormulario">
@@ -39,8 +39,8 @@
                 </thead>
                 <tbody id="tabla-vehiculos">
                     <?php
-                    include '../Model/conexion.php';
-                    include("../Controller/registro_vehiculo.php"); 
+                    include '../../models/FlotaDisponibilidadAcceso/conexion.php';
+                    include("../../controller/FlotaDisponibilidadAcceso/registro_vehiculo.php"); 
                     $sql = "SELECT * FROM tbVehiculos";
                     $result = $conexion->query($sql);
                     if ($result->num_rows > 0) {

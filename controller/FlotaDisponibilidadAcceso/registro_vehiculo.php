@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST["btn-registrar"])) {
-    include("../Model/conexion.php");
+    include("../../models/FlotaDisponibilidadAcceso/conexion.php");
     $nombre = $_POST["nombre-vehiculo"];
     $modelo = $_POST["modelo-vehiculo"];
     $year = $_POST["year-vehiculo"];
