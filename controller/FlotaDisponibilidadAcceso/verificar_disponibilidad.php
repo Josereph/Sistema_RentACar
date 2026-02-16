@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST['btn_verificar'])) {
-    include("../Model/conexion.php");
+    include '../../models/FlotaDisponibilidadAcceso/conexion.php';
     
     $id_vehiculo = $_POST['id_vehiculo'];
     $fecha_recogida = $_POST['fecha_recogida'];
