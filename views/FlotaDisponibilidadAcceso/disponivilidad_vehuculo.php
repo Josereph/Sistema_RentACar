@@ -24,7 +24,7 @@
                             <select class="form-control" id="vehiculo" name="id_vehiculo" required>
                                 <option value=""> Seleccione un vehículo </option>
                                 <?php
-                                include("../Model/conexion.php");
+                                include '../../models/FlotaDisponibilidadAcceso/conexion.php';
                                 $sql = "SELECT id_vehiculo, car_name, marca, modelo, tipo_vehiculo, precio_dia 
                                         FROM tbVehiculos 
                                         WHERE estado != 'mantenimiento' 
