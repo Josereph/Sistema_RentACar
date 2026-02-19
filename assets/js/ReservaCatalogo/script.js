@@ -24,21 +24,22 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // abrir modal
-    if (btnOpen) {
-        btnOpen.addEventListener('click', function () {
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
+    if (btnOpen && overlay) {
+    btnOpen.addEventListener('click', function () {
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    });
     }
 
     // cerrar modal
-    function closeModal() {
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-        // Reset to step 1
-        if (step1) step1.style.display = '';
-        if (step2) step2.style.display = 'none';
-    }
+   function closeModal() {
+  if (!overlay) return;
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  if (step1) step1.style.display = '';
+  if (step2) step2.style.display = 'none';
+}
+
 
     if (btnClose) btnClose.addEventListener('click', closeModal);
     if (btnDone) btnDone.addEventListener('click', closeModal);

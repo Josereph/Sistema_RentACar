@@ -307,8 +307,8 @@ $vehiculo = $carId && isset($vehiculos[$carId]) ? $vehiculos[$carId] : null;
     <title><?= $vehiculo ? htmlspecialchars($vehiculo['nombre']) . ' | Reserva' : 'Reservas' ?> | GO CAR</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/Rent-a-car/assets/css/style.css">
-    <link rel="stylesheet" href="/Rent-a-car/assets/css/reservas.css">
+    <link rel="stylesheet" href="/Sistema_RentACar/assets/css/ReservaCatalogo/style.css">
+    <link rel="stylesheet" href="/Sistema_RentACar/assets/css/ReservaCatalogo/reservas.css">
 </head>
 
 <body>
@@ -641,7 +641,7 @@ $vehiculo = $carId && isset($vehiculos[$carId]) ? $vehiculos[$carId] : null;
                 </div>
                 <h2>No has seleccionado un vehículo</h2>
                 <p>Para hacer una reserva, primero elige un vehículo de nuestro catálogo.</p>
-                <a href="/Rent-a-car/views/catalogo.php" class="btn-go-catalog">
+                <a href="/Sistema_RentACar/views/ReservaCatalogo/views/catalogo.php" class="btn-go-catalog">
                     <i class="fas fa-th-large"></i> Ir al Catálogo
                 </a>
             </div>
@@ -652,7 +652,7 @@ $vehiculo = $carId && isset($vehiculos[$carId]) ? $vehiculos[$carId] : null;
     <?php include __DIR__ . '/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/Rent-a-car/assets/js/script.js"></script>
+    <script src="/Sistema_RentACar/assets/js/ReservaCatalogo/script.js"></script>
 </body>
 
 </html>
