@@ -1,0 +1,13 @@
+{
+    "name": "sistema/rentacar",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Josereph",
+            "email": "josephorell05@gmail.com"
+        }
+    ],
+    "require": {
+        "mpdf/mpdf": "^8.2"
+    }
+}
