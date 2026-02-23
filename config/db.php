@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
-$dbname = "rent_a_car";  // cambia esto
+$dbname = "rent_a_car";  // cambiar esto
 $user = "root";
-$pass = ""; // en WAMP normalmente vacío
+$pass = ""; 
 $charset = "utf8mb4";
 
 $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";

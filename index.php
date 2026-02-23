@@ -1,63 +1,55 @@
 <?php
-<<<<<<< HEAD
-define('BASE_URL', '/Sistema_RentACar');
-function url($path = '') { return rtrim(BASE_URL,'/') . '/' . ltrim($path,'/'); }
-?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GO CAR | Tu plataforma de alquiler de vehículos</title>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link rel="stylesheet" href="<?= url('assets/css/ReservaCatalogo/style.css') ?>">
-</head>
-<body>
-
-    <?php include __DIR__ . '/views/ReservaCatalogo/views/navbar.php'; ?>
-
-    <section class="hero-section py-5">
-        <div class="container text-center">
-            <h1 class="display-4 fw-bold mb-4">Bienvenido a GO CAR</h1>
-            <p class="lead mb-4">Encuentra el vehículo perfecto para tu viaje</p>
-            <a href="<?= url('views/ReservaCatalogo/views/catalogo.php') ?>" class="btn btn-primary">Explorar Catálogo</a>
-        </div>
-    </section>
-
-    <?php include __DIR__ . '/views/ReservaCatalogo/views/footer.php'; ?>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="<?= url('assets/js/script.js') ?>"></script>
-</body>
-</html>
-=======
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-/**
- * BASE_URL: sirve para que /Sistema_RentACar, /Rent-a-car, etc. funcionen igual.
- * Ej: si entras por http://localhost/Sistema_RentACar/index.php
- * BASE_URL = /Sistema_RentACar
- */
-$BASE_URL = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-if ($BASE_URL === '/' || $BASE_URL === '\\') $BASE_URL = '';
+// ===== BASE_URL + url() (sin hardcodear /Sistema_RentACar) =====
+if (!defined('PROJECT_ROOT_FS')) {
+  define('PROJECT_ROOT_FS', realpath(__DIR__));
+}
 
-$view = $_GET['v'] ?? 'clientes';
+if (!defined('BASE_URL')) {
+  $docRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
+  $proj = str_replace('\\', '/', PROJECT_ROOT_FS);
+  $doc  = $docRoot ? str_replace('\\', '/', $docRoot) : '';
+
+  $rel = '';
+  if ($doc && strpos($proj, $doc) === 0) {
+    $rel = substr($proj, strlen($doc));
+  }
+  $rel = '/' . trim(str_replace('\\', '/', $rel), '/');
+  if ($rel === '/') { $rel = ''; }
+
+  define('BASE_URL', $rel);
+}
+
+if (!function_exists('url')) {
+  function url($path = '') {
+    return rtrim(BASE_URL, '/') . '/' . ltrim($path, '/');
+  }
+}
+
+// ===== ROUTER =====
+$view = $_GET['v'] ?? 'home'; // <- Home por defecto
 
 $views = [
+  // Publico (Reserva & Catálogo)
+  'home'     => __DIR__ . '/views/ReservaCatalogo/views/home.php',
+  'catalogo' => __DIR__ . '/views/ReservaCatalogo/views/catalogo.php',
+  'reservas' => __DIR__ . '/views/ReservaCatalogo/views/reservas.php',
+  'admin_rc' => __DIR__ . '/views/ReservaCatalogo/views/admin.php',
+
+  // Admin del sistema (lo veremos después)
   'clientes'       => __DIR__ . '/views/AdministracionClientesOperaciones/clientes.php',
   'checklist'      => __DIR__ . '/views/AdministracionClientesOperaciones/checklist.php',
   'devolucion'     => __DIR__ . '/views/AdministracionClientesOperaciones/devolucion.php',
   'disponibilidad' => __DIR__ . '/views/AdministracionClientesOperaciones/disponibilidad.php',
 ];
 
+// Cargar vista
 if (isset($views[$view]) && file_exists($views[$view])) {
   require $views[$view];
-} else {
-  http_response_code(404);
-  echo "Vista no encontrada.";
+  exit;
 }
->>>>>>> AdministracionClientesOperaciones
+
+http_response_code(404);
+echo "Vista no encontrada.";
