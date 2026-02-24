@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <?php include __DIR__ . '/navbar.php'; ?>
+    <?php include __DIR__ . '/../../layouts/navbar.php'; ?>
 
     <!-- Hero Section del Catálogo -->
     <section class="catalog-hero"

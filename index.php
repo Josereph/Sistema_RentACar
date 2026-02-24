@@ -2,54 +2,106 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// ===== BASE_URL + url() (sin hardcodear /Sistema_RentACar) =====
-if (!defined('PROJECT_ROOT_FS')) {
-  define('PROJECT_ROOT_FS', realpath(__DIR__));
+/**
+ * ==========================================================
+ *  BOOTSTRAP / ROUTER PRINCIPAL
+ *  - Define PROJECT_ROOT_FS
+ *  - Calcula BASE_URL automáticamente
+ *  - Define url() para rutas de assets/enlaces
+ *  - Soporta:
+ *      A) index.php?v=home  (tu sistema viejo)
+ *      B) index.php?controller=Administracion&action=index (MVC controllers)
+ * ==========================================================
+ */
+
+// 1) Root físico del proyecto
+define('PROJECT_ROOT_FS', __DIR__);
+
+// 2) Base URL automática (sin hardcodear /Sistema_RentACar)
+$scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME']);  // ej: /Sistema_RentACar/index.php
+$baseDir = rtrim(str_replace('/index.php', '', $scriptName), '/'); // ej: /Sistema_RentACar
+define('BASE_URL', $baseDir);
+
+// 3) Helper URL
+function url(string $path = ''): string
+{
+    $path = ltrim($path, '/');
+    return rtrim(BASE_URL, '/') . '/' . $path;
 }
 
-if (!defined('BASE_URL')) {
-  $docRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
-  $proj = str_replace('\\', '/', PROJECT_ROOT_FS);
-  $doc  = $docRoot ? str_replace('\\', '/', $docRoot) : '';
+/**
+ * ==========================================================
+ *  ROUTE: controller/action (MVC)
+ * ==========================================================
+ */
+$controller = $_GET['controller'] ?? null;
+$action     = $_GET['action'] ?? null;
 
-  $rel = '';
-  if ($doc && strpos($proj, $doc) === 0) {
-    $rel = substr($proj, strlen($doc));
-  }
-  $rel = '/' . trim(str_replace('\\', '/', $rel), '/');
-  if ($rel === '/') { $rel = ''; }
+if ($controller && $action) {
+    $controllerName = $controller . 'Controller';
 
-  define('BASE_URL', $rel);
+    // Busca el controller en tus carpetas reales
+    $possiblePaths = [
+        PROJECT_ROOT_FS . '/controller/shared/' . $controllerName . '.php',
+        PROJECT_ROOT_FS . '/controller/AdministracionClientesOperaciones/' . $controllerName . '.php',
+        PROJECT_ROOT_FS . '/controller/OperacionesRentaControl/' . $controllerName . '.php',
+        PROJECT_ROOT_FS . '/controller/ReservaCatalogo/' . $controllerName . '.php',
+        PROJECT_ROOT_FS . '/controller/FlotaDisponibilidadAcceso/' . $controllerName . '.php',
+    ];
+
+    $foundFile = null;
+    foreach ($possiblePaths as $p) {
+        if (file_exists($p)) { $foundFile = $p; break; }
+    }
+
+    if (!$foundFile) {
+        http_response_code(404);
+        die("Controller file no encontrado: " . htmlspecialchars($controllerName));
+    }
+
+    require_once $foundFile;
+
+    if (!class_exists($controllerName)) {
+        http_response_code(500);
+        die("Clase controller no existe: " . htmlspecialchars($controllerName));
+    }
+
+    $obj = new $controllerName();
+
+    if (!method_exists($obj, $action)) {
+        http_response_code(404);
+        die("Action no existe: " . htmlspecialchars($action));
+    }
+
+    $obj->$action();
+    exit; // IMPORTANTÍSIMO: no seguir con ?v=
 }
 
-if (!function_exists('url')) {
-  function url($path = '') {
-    return rtrim(BASE_URL, '/') . '/' . ltrim($path, '/');
-  }
+/**
+ * ==========================================================
+ *  ROUTE: v (tu sistema viejo de vistas)
+ * ==========================================================
+ */
+$v = $_GET['v'] ?? 'home';
+
+switch ($v) {
+    case 'home':
+        require PROJECT_ROOT_FS . '/views/ReservaCatalogo/views/home.php';
+        break;
+
+    case 'catalogo':
+        require PROJECT_ROOT_FS . '/views/ReservaCatalogo/views/catalogo.php';
+        break;
+
+    case 'reservas':
+        require PROJECT_ROOT_FS . '/views/ReservaCatalogo/views/reservas.php';
+        break;
+
+    // Si quieres una vista admin vieja por v, puedes agregarla, pero ya no hace falta.
+    // case 'admin': require PROJECT_ROOT_FS . '/views/ReservaCatalogo/views/admin.php'; break;
+
+    default:
+        http_response_code(404);
+        echo "Vista no encontrada: " . htmlspecialchars($v);
+        break;
 }
-
-// ===== ROUTER =====
-$view = $_GET['v'] ?? 'home'; // <- Home por defecto
-
-$views = [
-  // Publico (Reserva & Catálogo)
-  'home'     => __DIR__ . '/views/ReservaCatalogo/views/home.php',
-  'catalogo' => __DIR__ . '/views/ReservaCatalogo/views/catalogo.php',
-  'reservas' => __DIR__ . '/views/ReservaCatalogo/views/reservas.php',
-  'admin_rc' => __DIR__ . '/views/ReservaCatalogo/views/admin.php',
-
-  // Admin del sistema (lo veremos después)
-  'clientes'       => __DIR__ . '/views/AdministracionClientesOperaciones/clientes.php',
-  'checklist'      => __DIR__ . '/views/AdministracionClientesOperaciones/checklist.php',
-  'devolucion'     => __DIR__ . '/views/AdministracionClientesOperaciones/devolucion.php',
-  'disponibilidad' => __DIR__ . '/views/AdministracionClientesOperaciones/disponibilidad.php',
-];
-
-// Cargar vista
-if (isset($views[$view]) && file_exists($views[$view])) {
-  require $views[$view];
-  exit;
-}
-
-http_response_code(404);
-echo "Vista no encontrada.";

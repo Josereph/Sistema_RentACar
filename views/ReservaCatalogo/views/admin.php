@@ -1,58 +1,52 @@
 <?php
-// ============================================
-// BOOTSTRAP DE RUTAS (NO TOCAR)
-// ============================================
-if (!defined('PROJECT_ROOT_FS')) {
-    $projectRoot = realpath(__DIR__ . '/../../..');
-    if ($projectRoot === false) { $projectRoot = realpath(__DIR__); }
-    define('PROJECT_ROOT_FS', $projectRoot);
-}
-
-if (!defined('BASE_URL')) {
-    $docRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
-    $proj = str_replace('\\', '/', PROJECT_ROOT_FS);
-    $doc  = $docRoot ? str_replace('\\', '/', $docRoot) : '';
-
-    $rel = '';
-    if ($doc && strpos($proj, $doc) === 0) {
-        $rel = substr($proj, strlen($doc));
-    }
-    $rel = '/' . trim(str_replace('\\', '/', $rel), '/');
-    if ($rel === '/') { $rel = ''; }
-
-    define('BASE_URL', $rel);
-}
-
-if (!function_exists('url')) {
-    function url($path = '') {
-        return rtrim(BASE_URL, '/') . '/' . ltrim($path, '/');
-    }
-}
+// Esta vista entra por router (index.php). Ya existen PROJECT_ROOT_FS y url().
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | GO CAR</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | GO CAR</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="<?= url('assets/css/ReservaCatalogo/style.css') ?>">
-    <link rel="stylesheet" href="<?= url('assets/css/ReservaCatalogo/admin.css') ?>">
+  <link rel="stylesheet" href="<?= url('assets/css/ReservaCatalogo/style.css') ?>">
+  <link rel="stylesheet" href="<?= url('assets/css/ReservaCatalogo/admin.css') ?>">
 </head>
+
 <body>
 
-    <?php include __DIR__ . '/navbar.php'; ?>
+  <?php include PROJECT_ROOT_FS . '/views/layouts/navbar.php'; ?>
 
-    <!-- Tu contenido de admin queda igual -->
-    <?php /* ====== TU CONTENIDO ADMIN AQUÍ (SIN CAMBIOS) ====== */ ?>
+  <div class="container py-4">
+    <h2 class="mb-3">Panel de Administración</h2>
 
-    <?php include __DIR__ . '/footer.php'; ?>
+    <div class="row mt-4 g-2">
+      <div class="col-md-4">
+        <a href="<?= url('index.php?controller=Clientes&action=index') ?>"
+           class="btn btn-primary w-100">
+          Gestión de Clientes
+        </a>
+      </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="<?= url('assets/js/script.js') ?>"></script>
+      <div class="col-md-4">
+        <a href="<?= url('index.php?controller=Devolucion&action=index') ?>"
+           class="btn btn-success w-100">
+          Devoluciones
+        </a>
+      </div>
+
+      <div class="col-md-4">
+        <!-- id_devolucion=1 es solo para prueba; luego lo volvemos dinámico desde Devolución -->
+        <a href="<?= url('index.php?controller=Checklist&action=index&id_devolucion=1') ?>"
+           class="btn btn-warning w-100">
+          Checklist
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

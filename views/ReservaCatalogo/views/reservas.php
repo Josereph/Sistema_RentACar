@@ -312,7 +312,7 @@ $vehiculo = $carId && isset($vehiculos[$carId]) ? $vehiculos[$carId] : null;
 </head>
 
 <body>
-    <?php include __DIR__ . '/navbar.php'; ?>
+    <?php include __DIR__ . '/../../layouts/navbar.php'; ?>
 
     <?php if ($vehiculo): ?>
     <!-- 

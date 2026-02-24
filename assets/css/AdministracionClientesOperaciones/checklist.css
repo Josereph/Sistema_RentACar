@@ -1,0 +1,74 @@
+/* assets/css/AdministracionClientesOperaciones/checklist.css */
+
+/* Si tu style.css define variables, las aprovechamos */
+:root{
+  --ok: #16a34a;
+  --fail: #dc2626;
+}
+
+.checklist-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 992px){
+  .checklist-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+.check-item{
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 14px;
+  padding: 14px;
+  background: #fff;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+
+.check-item:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(0,0,0,.06);
+}
+
+.check-item__top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+}
+
+.check-item__title{
+  font-weight: 700;
+  display:flex;
+  align-items:center;
+}
+
+.check-item__bottom{
+  margin-top: 10px;
+}
+
+.check-item.is-ok{
+  border-color: rgba(22,163,74,.35);
+  box-shadow: 0 10px 26px rgba(22,163,74,.10);
+}
+
+.check-item.is-falla{
+  border-color: rgba(220,38,38,.35);
+  box-shadow: 0 10px 26px rgba(220,38,38,.10);
+}
+
+/* Firma */
+.signature-wrapper{
+  border: 1px dashed rgba(0,0,0,.25);
+  border-radius: 12px;
+  height: 160px;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+#signatureCanvas{
+  width: 100%;
+  height: 160px;
+  display:block;
+}

@@ -23,7 +23,7 @@ if (!function_exists('url')) {
 
 <body class="gocar-body">
 
-  <?php include __DIR__ . '/navbar.php'; ?>
+  <?php include __DIR__ . '/../../layouts/navbar.php'; ?>
 
   <!-- HERO -->
   <header class="gocar-hero">
