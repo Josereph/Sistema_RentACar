@@ -72,7 +72,10 @@ $inactivos = $inactivos ?? 0;
                 <button class="btn btn-primary btn-sm" onclick="openModal('modalNuevoCliente')">
                     <i class="fas fa-plus"></i> Nuevo Cliente
                 </button>
-                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-excel"></i> Exportar</a>
+                
+                <a href="/Sistema_RentACar/index.php?controller=Clientes&action=exportarExcel" class="btn btn-outline-secondary btn-sm">
+    <i class="fas fa-file-excel"></i> Exportar
+</a>
             </div>
         </div>
         <div class="card-body">

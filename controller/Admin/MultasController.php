@@ -7,9 +7,8 @@ class MultasController extends BaseAdminController
     public function index()
     {
         parent::__construct();
-        $multasPendientes = Multa::all(false);
-        $multasPagadas = Multa::all(true);
-        $titulo = 'Gestión de Multas';
+        $multas = Multa::allPendientes();
+        $titulo = 'Multas Pendientes';
         $seccion = 'multas';
         require PROJECT_ROOT_FS . '/views/admin/multas/index.php';
     }
@@ -19,9 +18,9 @@ class MultasController extends BaseAdminController
         parent::__construct();
         $id = $_GET['id'] ?? 0;
         if ($id) {
-            Multa::marcarPagada($id);
+            Multa::pagar($id);
         }
-        header('Location: ' . url('index.php?controller=Multas&action=index&success=pagada'));
+        header('Location: /Sistema_RentACar/index.php?controller=Multas&action=index');
         exit;
     }
 }

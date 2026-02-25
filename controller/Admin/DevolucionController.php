@@ -4,6 +4,8 @@ require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Devolucion.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Reserva.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Vehiculo.php';
+require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Cliente.php'; // Añadido para el correo
+require_once __DIR__ . '/../../helpers/EmailHelper.php'; // <-- AÑADIDO
 
 class DevolucionController extends BaseAdminController
 {
@@ -11,6 +13,26 @@ class DevolucionController extends BaseAdminController
     {
         parent::__construct();
         require PROJECT_ROOT_FS . '/views/admin/devoluciones/index.php';
+    }
+
+    public function listado()
+    {
+        parent::__construct();
+        $db = Database::connect();
+        $devoluciones = $db->query("
+            SELECT d.*, r.id_reserva, 
+                   c.nombre as cliente_nombre, c.apellido as cliente_apellido,
+                   v.marca, v.modelo, v.numero_placa
+            FROM tbDevoluciones d
+            INNER JOIN tbReservas r ON d.id_reserva = r.id_reserva
+            INNER JOIN tbClientes c ON r.id_cliente = c.id_cliente
+            INNER JOIN tbVehiculos v ON r.id_vehiculo = v.id_vehiculo
+            ORDER BY d.fecha_devolucion_real DESC
+        ")->fetchAll();
+
+        $titulo = 'Listado de Devoluciones';
+        $seccion = 'devoluciones';
+        require PROJECT_ROOT_FS . '/views/admin/devoluciones/listado.php';
     }
 
     public function buscarContrato()
@@ -50,12 +72,10 @@ class DevolucionController extends BaseAdminController
             die('Reserva no identificada');
         }
 
-        // Obtener datos de la reserva para cálculos
         $db = Database::connect();
         $reserva = Reserva::find($id_reserva);
         $vehiculo = Vehiculo::find($reserva['id_vehiculo']);
 
-        // Datos del formulario
         $fecha_real = $_POST['fecha_devolucion_real'];
         $km_final = (int)$_POST['km_retorno'];
         $combustible_retorno = $_POST['combustible_retorno'];
@@ -64,7 +84,6 @@ class DevolucionController extends BaseAdminController
         $estado_general = $_POST['estado_general'] ?? 'bueno';
         $observaciones_finales = $_POST['observaciones_finales'] ?? '';
 
-        // Calcular días de atraso
         $fecha_pactada = new DateTime($reserva['fecha_entrega']);
         $fecha_real_dt = new DateTime($fecha_real);
         $dias_atraso = 0;
@@ -72,11 +91,9 @@ class DevolucionController extends BaseAdminController
             $dias_atraso = $fecha_pactada->diff($fecha_real_dt)->days;
         }
 
-        // Cargo por atraso (50% extra por día)
         $cargo_atraso = $dias_atraso * $vehiculo['precio_dia'] * 0.5;
 
-        // Cargo por combustible (asumiendo que salió lleno)
-        $nivel_combustible_salida = 'lleno'; // idealmente vendría de la reserva
+        $nivel_combustible_salida = 'lleno';
         $costo_combustible_por_nivel = [
             'lleno' => 0,
             'tres_cuartos' => 10,
@@ -89,7 +106,6 @@ class DevolucionController extends BaseAdminController
             $cargo_combustible = $costo_combustible_por_nivel[$combustible_retorno] ?? 0;
         }
 
-        // Armar array de multas
         $multas = [];
         if ($cargo_atraso > 0) {
             $multas[] = [
@@ -124,12 +140,53 @@ class DevolucionController extends BaseAdminController
 
         try {
             $id_devolucion = Devolucion::registrarDevolucion($id_reserva, $data);
-            // Redirigir al checklist con el id_devolucion generado
+
+            // Enviar correo de devolución completada
+            $cliente = Cliente::find($reserva['id_cliente']);
+            $vehiculo = Vehiculo::find($reserva['id_vehiculo']);
+            $datosCorreo = [
+                'vehiculo' => $vehiculo['marca'] . ' ' . $vehiculo['modelo'] . ' (' . $vehiculo['numero_placa'] . ')'
+            ];
+            EmailHelper::sendDevolucionCompletada($cliente['correo'], $cliente['nombre'], $datosCorreo);
+
+            // Enviar correos de multas si las hay
+            foreach ($multas as $m) {
+                EmailHelper::sendMultaAplicada($cliente['correo'], $cliente['nombre'], $m);
+            }
+
             header('Location: /Sistema_RentACar/index.php?controller=Checklist&action=index&id_devolucion=' . $id_devolucion);
             exit;
         } catch (Exception $e) {
-            header('Location: ' . url('index.php?controller=Devolucion&action=index&error=1&msg=' . urlencode($e->getMessage())));
+            header('Location: /Sistema_RentACar/index.php?controller=Devolucion&action=index&error=1&msg=' . urlencode($e->getMessage()));
             exit;
         }
+    }
+
+    // Método para recordatorios (puede llamarse vía cron)
+    public function enviarRecordatorios()
+    {
+        parent::__construct();
+        $db = Database::connect();
+        $manana = date('Y-m-d', strtotime('+1 day'));
+        $reservas = $db->query("
+            SELECT r.id_reserva, c.correo, c.nombre, v.marca, v.modelo, v.numero_placa, r.fecha_entrega
+            FROM tbReservas r
+            INNER JOIN tbClientes c ON r.id_cliente = c.id_cliente
+            INNER JOIN tbVehiculos v ON r.id_vehiculo = v.id_vehiculo
+            WHERE r.estado = 'en_curso' AND DATE(r.fecha_entrega) = '$manana'
+        ")->fetchAll();
+
+        $enviados = 0;
+        foreach ($reservas as $r) {
+            $datos = [
+                'vehiculo' => $r['marca'] . ' ' . $r['modelo'] . ' (' . $r['numero_placa'] . ')',
+                'fecha_entrega' => date('d/m/Y', strtotime($r['fecha_entrega']))
+            ];
+            if (EmailHelper::sendRecordatorioDevolucion($r['correo'], $r['nombre'], $datos)) {
+                $enviados++;
+            }
+        }
+        echo "Recordatorios enviados: $enviados";
+        exit;
     }
 }

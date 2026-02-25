@@ -15,7 +15,7 @@ class ClientesController extends BaseAdminController
         $nuevosMes = Cliente::countNuevosMes();
         $inactivos = $totalClientes - $activos;
 
-        require __DIR__ . '/../../views/admin/clientes/index.php'; // <-- CORREGIDO
+        require PROJECT_ROOT_FS . '/views/admin/clientes/index.php';
     }
 
     public function crear()
@@ -32,9 +32,9 @@ class ClientesController extends BaseAdminController
                 'correo'    => $_POST['email'] ?? null,
             ];
             if (Cliente::create($data)) {
-                header('Location: index.php?controller=Clientes&action=index&success=creado');
+                header('Location: /Sistema_RentACar/index.php?controller=Clientes&action=index&success=creado');
             } else {
-                header('Location: index.php?controller=Clientes&action=index&error=crear');
+                header('Location: /Sistema_RentACar/index.php?controller=Clientes&action=index&error=crear');
             }
         }
     }
@@ -54,9 +54,9 @@ class ClientesController extends BaseAdminController
                 'correo'    => $_POST['email'] ?? null,
             ];
             if (Cliente::update($id, $data)) {
-                header('Location: index.php?controller=Clientes&action=index&success=editado');
+                header('Location: /Sistema_RentACar/index.php?controller=Clientes&action=index&success=editado');
             } else {
-                header('Location: index.php?controller=Clientes&action=index&error=editar');
+                header('Location: /Sistema_RentACar/index.php?controller=Clientes&action=index&error=editar');
             }
         }
     }
@@ -69,7 +69,7 @@ class ClientesController extends BaseAdminController
         if ($id) {
             Cliente::delete($id);
         }
-        header('Location: index.php?controller=Clientes&action=index');
+        header('Location: /Sistema_RentACar/index.php?controller=Clientes&action=index');
     }
 
     public function getJson()
@@ -79,6 +79,30 @@ class ClientesController extends BaseAdminController
         $cliente = Cliente::find($id);
         header('Content-Type: application/json');
         echo json_encode($cliente);
+        exit;
+    }
+
+    public function exportarExcel()
+    {
+        parent::__construct();
+        $clientes = Cliente::all();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="clientes_' . date('Y-m-d') . '.csv"');
+        $output = fopen('php://output', 'w');
+        fputcsv($output, ['ID', 'Nombre', 'Apellido', 'DUI', 'Teléfono', 'Email', 'Dirección', 'Fecha Registro']);
+        foreach ($clientes as $c) {
+            fputcsv($output, [
+                $c['id_cliente'],
+                $c['nombre'],
+                $c['apellido'],
+                $c['DUI'],
+                $c['telefono'],
+                $c['correo'],
+                $c['direccion'],
+                $c['created_at']
+            ]);
+        }
+        fclose($output);
         exit;
     }
 }

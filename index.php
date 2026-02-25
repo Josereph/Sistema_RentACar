@@ -40,6 +40,9 @@ $adminControllers = [
     'Contratos'     => 'ContratosController',
     'Reservas' => 'ReservasController',
     'Multas' => 'MultasController',
+    'Mantenimientos' => 'MantenimientosController',
+    'Notificaciones' => 'NotificacionesController',
+    
 ];
 
 // ============================================

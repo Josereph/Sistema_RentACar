@@ -33,12 +33,14 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
                         <i class="fas fa-undo-alt"></i> Devoluciones
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link <?= $seccion == 'checklist' ? 'active' : '' ?>" 
-                       href="/Sistema_RentACar/index.php?controller=Checklist&action=index">
-                        <i class="fas fa-clipboard-check"></i> Checklist
-                    </a>
-                </li>
+    <a class="nav-link <?= $seccion == 'mantenimientos' ? 'active' : '' ?>" 
+       href="/Sistema_RentACar/index.php?controller=Mantenimientos&action=index">
+        <i class="fas fa-wrench"></i> Mantenimientos
+    </a>
+</li>
+                
                 <?php if ($_SESSION['admin_rol'] === 'superadmin'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?= $seccion == 'usuarios' ? 'active' : '' ?>" 
@@ -47,6 +49,15 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
                     </a>
                 </li>
                 <?php endif; ?>
+
+                <?php if ($_SESSION['admin_rol'] === 'superadmin'): ?>
+<li class="nav-item">
+    <a class="nav-link <?= $seccion == 'multas' ? 'active' : '' ?>" 
+       href="/Sistema_RentACar/index.php?controller=Multas&action=index">
+        <i class="fas fa-exclamation-triangle"></i> Multas
+    </a>
+</li>
+<?php endif; ?>
 
                 <li class="nav-item">
                     <a class="nav-link <?= $seccion == 'reservas' ? 'active' : '' ?>" 
@@ -60,12 +71,7 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
                         <i class="fas fa-chart-bar"></i> Reportes
                     </a>
                 </li>
-                <li class="nav-item">
-    <a class="nav-link <?= $seccion == 'multas' ? 'active' : '' ?>" 
-       href="/Sistema_RentACar/index.php?controller=Multas&action=index">
-        <i class="fas fa-exclamation-triangle"></i> Multas
-    </a>
-</li>
+                
                 <li class="nav-item">
                     <a class="nav-link <?= $seccion == 'contratos' ? 'active' : '' ?>" 
                        href="/Sistema_RentACar/index.php?controller=Contratos&action=index">

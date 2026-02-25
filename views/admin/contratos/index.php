@@ -11,6 +11,15 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
         </div>
     </div>
 
+    <?php if (isset($_GET['success'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?php if ($_GET['success'] == 'pdf_generado'): ?>
+                PDF generado exitosamente.
+            <?php endif; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
+
     <div class="card">
         <div class="card-header">
             <i class="fas fa-list me-2"></i>Lista de Contratos
@@ -45,25 +54,18 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
                             <td><?= date('d/m/Y', strtotime($c['fecha_entrega'])) ?></td>
                             <td>$<?= number_format($c['deposito'], 2) ?></td>
                             <td>
-                                <?php if ($c['pdf_path']): ?>
-                                    <a href="<?= url('index.php?controller=Contratos&action=verPdf&id=' . $c['id_contrato']) ?>" target="_blank" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-file-pdf"></i> Ver
+                                <?php if (!empty($c['pdf_path'])): ?>
+                                    <!-- Botón azul para ver PDF existente -->
+                                    <a href="/Sistema_RentACar/index.php?controller=Contratos&action=verPdf&id=<?= $c['id_contrato'] ?>" target="_blank" class="btn btn-sm btn-primary" title="Ver PDF">
+                                        <i class="fas fa-file-pdf"></i> Ver PDF
                                     </a>
                                 <?php else: ?>
-                                    <span class="text-muted">Sin PDF</span>
+                                    <!-- Botón verde para generar PDF -->
+                                    <a href="/Sistema_RentACar/index.php?controller=Contratos&action=generarPdf&id=<?= $c['id_contrato'] ?>" class="btn btn-sm btn-success" title="Generar PDF">
+                                        <i class="fas fa-file-pdf"></i> Generar PDF
+                                    </a>
                                 <?php endif; ?>
                             </td>
-                            <td>
-    <?php if ($c['pdf_path']): ?>
-        <a href="/Sistema_RentACar/<?= $c['pdf_path'] ?>" target="_blank" class="btn btn-sm btn-outline-primary" title="Ver PDF">
-            <i class="fas fa-file-pdf"></i>
-        </a>
-    <?php else: ?>
-        <a href="/Sistema_RentACar/index.php?controller=Contratos&action=generarPdf&id=<?= $c['id_contrato'] ?>" class="btn btn-sm btn-outline-success" title="Generar PDF">
-            <i class="fas fa-file-pdf"></i> Generar
-        </a>
-    <?php endif; ?>
-</td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

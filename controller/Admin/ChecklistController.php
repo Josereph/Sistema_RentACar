@@ -4,6 +4,8 @@ require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Checklis
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/ChecklistInspeccion.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/ChecklistInspeccionMeta.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Devolucion.php';
+require_once __DIR__ . '/../../config/db.php'; // Para la consulta adicional
+require_once __DIR__ . '/../../helpers/EmailHelper.php'; // <-- AÑADIDO
 
 class ChecklistController extends BaseAdminController
 {
@@ -24,7 +26,6 @@ class ChecklistController extends BaseAdminController
         $checks    = ChecklistInspeccion::getByDevolucion($id_devolucion);
         $meta      = ChecklistInspeccionMeta::getByDevolucion($id_devolucion);
 
-        // Pasar variables a la vista
         require PROJECT_ROOT_FS . '/views/admin/checklist/index.php';
     }
 
@@ -93,9 +94,25 @@ class ChecklistController extends BaseAdminController
             ChecklistInspeccion::upsert($id_devolucion, $id_item, $estado, $nota);
         }
 
-        // Redirigir a la lista de devoluciones (o a donde prefieras)
-        // Al final de guardar():
-header("Location: /Sistema_RentACar/index.php?controller=Devolucion&action=index&success=checklist_completado");
-exit;
+        // Enviar correo de checklist completado
+        $db = Database::connect();
+        $stmt = $db->prepare("
+            SELECT c.correo, c.nombre, v.marca, v.modelo, v.numero_placa
+            FROM tbDevoluciones d
+            INNER JOIN tbReservas r ON d.id_reserva = r.id_reserva
+            INNER JOIN tbClientes c ON r.id_cliente = c.id_cliente
+            INNER JOIN tbVehiculos v ON r.id_vehiculo = v.id_vehiculo
+            WHERE d.id_devolucion = ?
+        ");
+        $stmt->execute([$id_devolucion]);
+        $datos = $stmt->fetch();
+        if ($datos) {
+            EmailHelper::sendChecklistCompletado($datos['correo'], $datos['nombre'], [
+                'vehiculo' => $datos['marca'] . ' ' . $datos['modelo'] . ' (' . $datos['numero_placa'] . ')'
+            ]);
+        }
+
+        header("Location: /Sistema_RentACar/index.php?controller=Devolucion&action=listado&success=checklist_completado");
+        exit;
     }
 }

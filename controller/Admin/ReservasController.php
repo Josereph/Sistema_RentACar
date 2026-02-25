@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Contrato
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Pago.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Cliente.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Vehiculo.php';
+require_once __DIR__ . '/../../helpers/EmailHelper.php'; // <-- AÑADIDO
 
 class ReservasController extends BaseAdminController
 {
@@ -50,7 +51,6 @@ class ReservasController extends BaseAdminController
             die('El vehículo no está disponible en esas fechas');
         }
 
-        $db = null;
         try {
             $db = Database::connect();
             $db->beginTransaction();
@@ -82,13 +82,23 @@ class ReservasController extends BaseAdminController
             }
 
             $db->commit();
-            header('Location: ' . url('index.php?controller=Reservas&action=index&success=creada'));
+
+            // Enviar correo de confirmación
+            $cliente = Cliente::find($id_cliente);
+            $vehiculo = Vehiculo::find($id_vehiculo);
+            $datosCorreo = [
+                'vehiculo' => $vehiculo['marca'] . ' ' . $vehiculo['modelo'] . ' (' . $vehiculo['numero_placa'] . ')',
+                'fecha_recogida' => date('d/m/Y', strtotime($fecha_recogida)),
+                'fecha_entrega' => date('d/m/Y', strtotime($fecha_entrega)),
+                'total' => number_format($precio_total, 2)
+            ];
+            EmailHelper::sendReservaConfirmada($cliente['correo'], $cliente['nombre'], $datosCorreo);
+
+            header('Location: /Sistema_RentACar/index.php?controller=Reservas&action=index&success=creada');
             exit;
 
         } catch (Exception $e) {
-            if ($db && $db->inTransaction()) {
-                $db->rollBack();
-            }
+            $db->rollBack();
             die('Error al crear la reserva: ' . $e->getMessage());
         }
     }
@@ -131,7 +141,6 @@ class ReservasController extends BaseAdminController
         $id_vehiculo = $_POST['id_vehiculo'];
         $fecha_recogida = $_POST['fecha_recogida'];
         $fecha_entrega = $_POST['fecha_entrega'];
-        $estado = $_POST['estado'];
 
         $vehiculo = Vehiculo::find($id_vehiculo);
         $dias = (strtotime($fecha_entrega) - strtotime($fecha_recogida)) / 86400;
@@ -147,11 +156,11 @@ class ReservasController extends BaseAdminController
             'fecha_recogida' => $fecha_recogida,
             'fecha_entrega' => $fecha_entrega,
             'precio_total' => $precio_total,
-            'estado' => $estado
+            'estado' => $_POST['estado']
         ];
         Reserva::update($id, $data);
 
-        header('Location: ' . url('index.php?controller=Reservas&action=index&success=editada'));
+        header('Location: /Sistema_RentACar/index.php?controller=Reservas&action=index&success=editada');
         exit;
     }
 
@@ -163,7 +172,7 @@ class ReservasController extends BaseAdminController
             $db = Database::connect();
             $db->prepare("UPDATE tbReservas SET estado = 'cancelada' WHERE id_reserva = ?")->execute([$id]);
         }
-        header('Location: ' . url('index.php?controller=Reservas&action=index&success=cancelada'));
+        header('Location: /Sistema_RentACar/index.php?controller=Reservas&action=index&success=cancelada');
         exit;
     }
 }

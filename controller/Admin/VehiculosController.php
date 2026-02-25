@@ -157,7 +157,32 @@ class VehiculosController extends BaseAdminController
 
 
 
-
+public function exportarExcel()
+{
+    parent::__construct();
+    $vehiculos = Vehiculo::all(); // Asegúrate de que este método exista
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="vehiculos_' . date('Y-m-d') . '.csv"');
+    $output = fopen('php://output', 'w');
+    fputcsv($output, ['ID', 'Nombre', 'Marca', 'Modelo', 'Año', 'Placa', 'Color', 'Tipo', 'Capacidad', 'Precio/día', 'Estado']);
+    foreach ($vehiculos as $v) {
+        fputcsv($output, [
+            $v['id_vehiculo'],
+            $v['car_name'],
+            $v['marca'],
+            $v['modelo'],
+            $v['year'],
+            $v['numero_placa'],
+            $v['color'],
+            $v['tipo_vehiculo'],
+            $v['capacidad'],
+            $v['precio_dia'],
+            $v['estado']
+        ]);
+    }
+    fclose($output);
+    exit;
+}
 
     
 
