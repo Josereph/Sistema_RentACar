@@ -1,22 +1,15 @@
 <?php
-// /controller/AdministracionClientesOperaciones/ChecklistController.php
-
-// Incluir el controlador base (ajusta la ruta si es necesario)
-require_once __DIR__ . '/../Admin/BaseAdminController.php';
-
-// Modelos que ya usabas
+require_once __DIR__ . '/BaseAdminController.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/ChecklistItem.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/ChecklistInspeccion.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/ChecklistInspeccionMeta.php';
-require_once __DIR__ . '/../../models/OperacionesRentaControl/Devolucion.php'; // Ojo: verifica la ruta, quizás sea /../../models/AdministracionClientesOperaciones/Devolucion.php
+require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Devolucion.php';
 
 class ChecklistController extends BaseAdminController
 {
     public function index()
     {
-        // Verificar sesión (lo hace el constructor del padre)
         parent::__construct();
-
         $id_devolucion = isset($_GET['id_devolucion']) ? (int)$_GET['id_devolucion'] : 0;
         if ($id_devolucion <= 0) {
             die("Falta id_devolucion en la URL.");
@@ -28,10 +21,11 @@ class ChecklistController extends BaseAdminController
         }
 
         $items     = ChecklistItem::allActive();
-        $existente = ChecklistInspeccion::getByDevolucion($id_devolucion);
+        $checks    = ChecklistInspeccion::getByDevolucion($id_devolucion);
         $meta      = ChecklistInspeccionMeta::getByDevolucion($id_devolucion);
 
-        require __DIR__ . '/../../views/AdministracionClientesOperaciones/checklist.php';
+        // Pasar variables a la vista
+        require PROJECT_ROOT_FS . '/views/admin/checklist/index.php';
     }
 
     public function guardar()
@@ -99,7 +93,9 @@ class ChecklistController extends BaseAdminController
             ChecklistInspeccion::upsert($id_devolucion, $id_item, $estado, $nota);
         }
 
-        header("Location: index.php?controller=Checklist&action=index&id_devolucion=" . $id_devolucion . "&saved=1");
-        exit;
+        // Redirigir a la lista de devoluciones (o a donde prefieras)
+        // Al final de guardar():
+header("Location: /Sistema_RentACar/index.php?controller=Devolucion&action=index&success=checklist_completado");
+exit;
     }
 }

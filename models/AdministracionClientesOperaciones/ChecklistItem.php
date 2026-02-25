@@ -1,6 +1,4 @@
 <?php
-// /models/AdministracionClientesOperaciones/ChecklistItem.php
-
 require_once __DIR__ . '/../../config/db.php';
 
 class ChecklistItem

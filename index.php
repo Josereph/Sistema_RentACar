@@ -1,107 +1,96 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+// index.php - Router principal
+session_start();
 
-/**
- * ==========================================================
- *  BOOTSTRAP / ROUTER PRINCIPAL
- *  - Define PROJECT_ROOT_FS
- *  - Calcula BASE_URL automáticamente
- *  - Define url() para rutas de assets/enlaces
- *  - Soporta:
- *      A) index.php?v=home  (tu sistema viejo)
- *      B) index.php?controller=Administracion&action=index (MVC controllers)
- * ==========================================================
- */
+// ============================================
+// 1. CONSTANTES DE RUTAS (AJUSTA SEGÚN TU ENTORNO)
+// ============================================
+define('PROJECT_ROOT_FS', __DIR__); // Ruta absoluta en el sistema de archivos
 
-// 1) Root físico del proyecto
-define('PROJECT_ROOT_FS', __DIR__);
+// 🔧 IMPORTANTE: Cambia esto por la URL base de tu proyecto.
+// Ejemplo: si accedes vía http://localhost/Sistema_RentACar/ , entonces:
+// define('BASE_URL', '/Sistema_RentACar');
+// Si usas un virtual host como http://rentacar.local/ , pon solo '' o '/'.
+define('BASE_URL', '/Sistema_RentACar'); // <-- AJUSTA ESTO
 
-// 2) Base URL automática (sin hardcodear /Sistema_RentACar)
-$scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME']);  // ej: /Sistema_RentACar/index.php
-$baseDir = rtrim(str_replace('/index.php', '', $scriptName), '/'); // ej: /Sistema_RentACar
-define('BASE_URL', $baseDir);
-
-// 3) Helper URL
-function url(string $path = ''): string
-{
-    $path = ltrim($path, '/');
-    return rtrim(BASE_URL, '/') . '/' . $path;
+// Función auxiliar para generar URLs (si no existe)
+if (!function_exists('url')) {
+    function url($path = '') {
+        return BASE_URL . '/' . ltrim($path, '/');
+    }
 }
 
-/**
- * ==========================================================
- *  ROUTE: controller/action (MVC)
- * ==========================================================
- */
-$controller = $_GET['controller'] ?? null;
-$action     = $_GET['action'] ?? null;
+// ============================================
+// 2. ENRUTAMIENTO
+// ============================================
+$controller = $_GET['controller'] ?? 'home';
+$action     = $_GET['action']     ?? 'index';
+$vista      = $_GET['v']           ?? null; // Para el sistema antiguo (por vistas)
 
-if ($controller && $action) {
-    $controllerName = $controller . 'Controller';
+// Mapeo de controladores del panel de administración
+$adminControllers = [
+    'Auth'          => 'AuthController',
+    'Dashboard'     => 'DashboardController',
+    'Clientes'      => 'ClientesController',
+    'Vehiculos'     => 'VehiculosController',
+    'Devolucion'    => 'DevolucionController',
+    'Checklist'     => 'ChecklistController',
+    'Usuarios'      => 'UsuariosController',
+    'Reportes'      => 'ReportesController',
+    'Contratos'     => 'ContratosController',
+    'Reservas' => 'ReservasController',
+    'Multas' => 'MultasController',
+];
 
-    // Busca el controller en tus carpetas reales
-    $possiblePaths = [
-        PROJECT_ROOT_FS . '/controller/shared/' . $controllerName . '.php',
-        PROJECT_ROOT_FS . '/controller/AdministracionClientesOperaciones/' . $controllerName . '.php',
-        PROJECT_ROOT_FS . '/controller/OperacionesRentaControl/' . $controllerName . '.php',
-        PROJECT_ROOT_FS . '/controller/ReservaCatalogo/' . $controllerName . '.php',
-        PROJECT_ROOT_FS . '/controller/FlotaDisponibilidadAcceso/' . $controllerName . '.php',
-    ];
+// ============================================
+// 3. RUTAS CON CONTROLADOR (nuevo sistema)
+// ============================================
+if (isset($adminControllers[$controller])) {
+    // Construir ruta al archivo del controlador
+    $archivoControlador = __DIR__ . "/controller/Admin/{$adminControllers[$controller]}.php";
+    
+    if (file_exists($archivoControlador)) {
+        require_once $archivoControlador;
+        $obj = new $adminControllers[$controller]();
+        
+        if (method_exists($obj, $action)) {
+            $obj->$action();
+        } else {
+            die("Error 404: Acción '{$action}' no encontrada en el controlador '{$controller}'.");
+        }
+    } else {
+        die("Error 404: Controlador '{$controller}' no encontrado.");
+    }
+} 
+// ============================================
+// 4. RUTAS POR VISTA DIRECTA (sistema antiguo, compatible)
+// ============================================
+elseif ($vista) {
+    // Lista de vistas que requieren autenticación
+    $vistasProtegidas = ['clientes', 'devolucion', 'disponibilidad', 'checklist'];
 
-    $foundFile = null;
-    foreach ($possiblePaths as $p) {
-        if (file_exists($p)) { $foundFile = $p; break; }
+    if (in_array($vista, $vistasProtegidas)) {
+        // Verificar sesión
+        if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_logged'] !== true) {
+            header('Location: ' . url('index.php?controller=Auth&action=login'));
+            exit;
+        }
     }
 
-    if (!$foundFile) {
-        http_response_code(404);
-        die("Controller file no encontrado: " . htmlspecialchars($controllerName));
+    $archivoVista = __DIR__ . "/views/AdministracionClientesOperaciones/{$vista}.php";
+    if (file_exists($archivoVista)) {
+        require $archivoVista;
+    } else {
+        header("HTTP/1.0 404 Not Found");
+        echo "Vista no encontrada.";
     }
-
-    require_once $foundFile;
-
-    if (!class_exists($controllerName)) {
-        http_response_code(500);
-        die("Clase controller no existe: " . htmlspecialchars($controllerName));
-    }
-
-    $obj = new $controllerName();
-
-    if (!method_exists($obj, $action)) {
-        http_response_code(404);
-        die("Action no existe: " . htmlspecialchars($action));
-    }
-
-    $obj->$action();
-    exit; // IMPORTANTÍSIMO: no seguir con ?v=
-}
-
-/**
- * ==========================================================
- *  ROUTE: v (tu sistema viejo de vistas)
- * ==========================================================
- */
-$v = $_GET['v'] ?? 'home';
-
-switch ($v) {
-    case 'home':
-        require PROJECT_ROOT_FS . '/views/ReservaCatalogo/views/home.php';
-        break;
-
-    case 'catalogo':
-        require PROJECT_ROOT_FS . '/views/ReservaCatalogo/views/catalogo.php';
-        break;
-
-    case 'reservas':
-        require PROJECT_ROOT_FS . '/views/ReservaCatalogo/views/reservas.php';
-        break;
-
-    // Si quieres una vista admin vieja por v, puedes agregarla, pero ya no hace falta.
-    // case 'admin': require PROJECT_ROOT_FS . '/views/ReservaCatalogo/views/admin.php'; break;
-
-    default:
-        http_response_code(404);
-        echo "Vista no encontrada: " . htmlspecialchars($v);
-        break;
+} 
+// ============================================
+// 5. PÁGINA DE INICIO POR DEFECTO
+// ============================================
+else {
+    // Si no hay controller ni vista, redirigir al login o mostrar home público
+    // Por ahora, redirigimos al login del admin
+    header('Location: ' . url('index.php?controller=Auth&action=login'));
+    exit;
 }
