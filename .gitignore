@@ -1,0 +1,27 @@
+/vendor/
+.env
+node_modules/
+db.php
+.DS_Store
+# --- Configuración y Secretos (MUY IMPORTANTE) ---
+.env
+config.php
+credentials.json
+*.log
+
+# --- Dependencias de Composer ---
+/vendor/
+
+# --- Archivos del Sistema Operativo ---
+.DS_Store
+Thumbs.db
+
+# --- Archivos de Editores (VS Code, Sublime, etc.) ---
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --- Archivos temporales de PHP ---
+composer.lock
+.php-cs-fixer.cache

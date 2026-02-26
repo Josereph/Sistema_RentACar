@@ -30,7 +30,11 @@ if (!function_exists('url')) {
     }
 }
 ?>
-
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -59,6 +63,24 @@ if (!function_exists('url')) {
                         <i class="fas fa-tachometer-alt"></i> Admin
                     </a>
                 </li>
+            <?php if (!isset($_SESSION['id_usuario'])): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= url('Sistema_RentACar/views/FlotaDisponibilidadAcceso/login.php') ?>">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </a>
+                </li>
+            <?php else: ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Sistema_RentACar/controller/FlotaDisponibilidadAcceso/logout.php">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </a>
+                </li>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['id_rol']) && $_SESSION['id_rol'] == 1): ?>
+            <li class="nav-item">
+                <a class="nav-link" href="<?= url('views/FlotaDisponibilidadAcceso/CRUD_vehiculos') ?>">Registrar Vehiculo</a>
+            </li>
+            <?php endif; ?>
             </ul>
         </div>
     </div>
