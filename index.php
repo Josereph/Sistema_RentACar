@@ -42,6 +42,7 @@ $adminControllers = [
     'Multas' => 'MultasController',
     'Mantenimientos' => 'MantenimientosController',
     'Notificaciones' => 'NotificacionesController',
+      'GoogleAuth' => 'GoogleAuthController',
     
 ];
 
