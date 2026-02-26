@@ -1,9 +1,17 @@
 <?php
 // config/google.php
 defined('PROJECT_ROOT_FS') or define('PROJECT_ROOT_FS', dirname(__DIR__));
-require_once PROJECT_ROOT_FS . '/config/db.php';
 
-define('GOOGLE_CLIENT_ID', '464202329490-jt8q049a5gmc7kdnog95nprmf1morgbp.apps.googleusercontent.com');
-define('GOOGLE_CLIENT_SECRET', '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');
+// Cargar variables de entorno desde .env si existe
+if (file_exists(PROJECT_ROOT_FS . '/.env')) {
+    $lines = file(PROJECT_ROOT_FS . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        list($name, $value) = explode('=', $line, 2);
+        putenv(trim($name) . '=' . trim($value));
+    }
+}
+
+define('GOOGLE_CLIENT_ID', getenv('GOOGLE_CLIENT_ID') ?: '');
+define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: '');
 define('GOOGLE_REDIRECT_URI', 'http://localhost/Sistema_RentACar/index.php?controller=GoogleAuth&action=callback');
-?>
