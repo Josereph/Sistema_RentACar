@@ -1,9 +1,4 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
-if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_logged'] !== true) {
-    header('Location: ' . url('index.php?controller=Auth&action=login'));
-    exit;
-}
 $titulo = 'Gestión de Clientes';
 $seccion = 'clientes';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_header.php';
@@ -14,6 +9,7 @@ $totalClientes = $totalClientes ?? 0;
 $activos = $activos ?? 0;
 $nuevosMes = $nuevosMes ?? 0;
 $inactivos = $inactivos ?? 0;
+$rol = $_SESSION['admin_rol'] ?? 'operador';
 ?>
 <div class="container-fluid mt-4">
     <div class="row mb-4">
@@ -69,13 +65,16 @@ $inactivos = $inactivos ?? 0;
         <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="fas fa-list me-2"></i>Lista de Clientes</span>
             <div>
-                <button class="btn btn-primary btn-sm" onclick="openModal('modalNuevoCliente')">
-                    <i class="fas fa-plus"></i> Nuevo Cliente
-                </button>
-                
-                <a href="/Sistema_RentACar/index.php?controller=Clientes&action=exportarExcel" class="btn btn-outline-secondary btn-sm">
-    <i class="fas fa-file-excel"></i> Exportar
-</a>
+                <?php if ($rol === 'admin'): ?>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('modalNuevoCliente')">
+                        <i class="fas fa-plus"></i> Nuevo Cliente
+                    </button>
+                    <a href="/Sistema_RentACar/index.php?controller=Clientes&action=exportarExcel" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-file-excel"></i> Exportar
+                    </a>
+                <?php else: ?>
+                    <span class="text-muted">Modo solo lectura</span>
+                <?php endif; ?>
             </div>
         </div>
         <div class="card-body">
@@ -122,12 +121,14 @@ $inactivos = $inactivos ?? 0;
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-primary" onclick="editCliente(<?= $c['id_cliente'] ?>)" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteCliente(<?= $c['id_cliente'] ?>)" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <?php if ($rol === 'admin'): ?>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="editCliente(<?= $c['id_cliente'] ?>)" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteCliente(<?= $c['id_cliente'] ?>)" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                <?php endif; ?>
                                 <a href="#" class="btn btn-sm btn-outline-info" title="Ver historial">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -141,14 +142,15 @@ $inactivos = $inactivos ?? 0;
     </div>
 </div>
 
-<!-- MODAL NUEVO CLIENTE -->
+<!-- MODAL NUEVO CLIENTE (solo para admin) -->
+<?php if ($rol === 'admin'): ?>
 <div class="modal-overlay" id="modalNuevoCliente">
     <div class="modal-box">
         <div class="modal-header">
             <div class="modal-title"><i class="fas fa-user-plus me-2"></i>Nuevo Cliente</div>
             <button class="modal-close" onclick="closeModal('modalNuevoCliente')"><i class="fas fa-times"></i></button>
         </div>
-        <form action="<?= url('index.php?controller=Clientes&action=crear') ?>" method="POST">
+        <form action="/Sistema_RentACar/index.php?controller=Clientes&action=crear" method="POST">
             <div class="modal-body">
                 <div class="row g-3">
                     <div class="col-md-6">
@@ -192,7 +194,7 @@ $inactivos = $inactivos ?? 0;
             <div class="modal-title"><i class="fas fa-pen-to-square me-2"></i>Editar Cliente</div>
             <button class="modal-close" onclick="closeModal('modalEditCliente')"><i class="fas fa-times"></i></button>
         </div>
-        <form action="<?= url('index.php?controller=Clientes&action=editar') ?>" method="POST">
+        <form action="/Sistema_RentACar/index.php?controller=Clientes&action=editar" method="POST">
             <input type="hidden" name="id" id="edit_id">
             <div class="modal-body">
                 <div class="row g-3">
@@ -229,12 +231,13 @@ $inactivos = $inactivos ?? 0;
         </form>
     </div>
 </div>
+<?php endif; ?>
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
 
 <script>
 function editCliente(id) {
-    fetch('<?= url('index.php?controller=Clientes&action=getJson&id=') ?>' + id)
+    fetch('/Sistema_RentACar/index.php?controller=Clientes&action=getJson&id=' + id)
         .then(r => r.json())
         .then(d => {
             document.getElementById('edit_id').value = d.id_cliente;
@@ -249,7 +252,7 @@ function editCliente(id) {
 }
 function deleteCliente(id) {
     if (confirm('¿Está seguro de eliminar este cliente?')) {
-        window.location.href = '<?= url('index.php?controller=Clientes&action=eliminar&id=') ?>' + id;
+        window.location.href = '/Sistema_RentACar/index.php?controller=Clientes&action=eliminar&id=' + id;
     }
 }
 </script>

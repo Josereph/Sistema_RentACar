@@ -3,6 +3,9 @@ $titulo = 'Gestión de Reservas';
 $seccion = 'reservas';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_header.php';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
+
+$reservas = $reservas ?? [];
+$rol = $_SESSION['admin_rol'] ?? 'operador';
 ?>
 <div class="container-fluid mt-4">
     <div class="row mb-4">
@@ -18,7 +21,7 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="fas fa-list me-2"></i>Lista de Reservas</span>
-            <a href="<?= url('index.php?controller=Reservas&action=nueva') ?>" class="btn btn-primary btn-sm">
+            <a href="/Sistema_RentACar/index.php?controller=Reservas&action=nueva" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Nueva Reserva
             </a>
         </div>
@@ -59,20 +62,22 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
                                 </span>
                             </td>
                             <td>
-                                <a href="<?= url('index.php?controller=Devolucion&action=index&reserva=' . $r['id_reserva']) ?>" class="btn btn-sm btn-outline-primary" title="Registrar devolución">
+                                <a href="/Sistema_RentACar/index.php?controller=Devolucion&action=index&reserva=<?= $r['id_reserva'] ?>" class="btn btn-sm btn-outline-primary" title="Registrar devolución">
                                     <i class="fas fa-undo-alt"></i>
                                 </a>
-                                <a href="#" class="btn btn-sm btn-outline-secondary" title="Ver contrato">
-                                    <i class="fas fa-file-pdf"></i>
-                                </a>
-                                <a href="/Sistema_RentACar/index.php?controller=Reservas&action=cancelar&id=<?= $r['id_reserva'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Cancelar esta reserva?')" title="Cancelar">
-    <i class="fas fa-times"></i>
-</a>
-<?php if ($r['id_contrato']): ?>
-    <a href="/Sistema_RentACar/index.php?controller=Contratos&action=index&id=<?= $r['id_contrato'] ?>" class="btn btn-sm btn-outline-info" title="Ver contrato">
-        <i class="fas fa-file-contract"></i>
-    </a>
-<?php endif; ?>
+                                <?php if ($rol === 'admin'): ?>
+                                    <a href="/Sistema_RentACar/index.php?controller=Reservas&action=editar&id=<?= $r['id_reserva'] ?>" class="btn btn-sm btn-outline-secondary" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="/Sistema_RentACar/index.php?controller=Reservas&action=cancelar&id=<?= $r['id_reserva'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Cancelar esta reserva?')" title="Cancelar">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                <?php endif; ?>
+                                <?php if (isset($r['id_contrato']) && $r['id_contrato']): ?>
+                                    <a href="/Sistema_RentACar/index.php?controller=Contratos&action=index&id=<?= $r['id_contrato'] ?>" class="btn btn-sm btn-outline-info" title="Ver contrato">
+                                        <i class="fas fa-file-contract"></i>
+                                    </a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>

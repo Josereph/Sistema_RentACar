@@ -3,6 +3,8 @@ $titulo = 'Gestión de Mantenimientos';
 $seccion = 'mantenimientos';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_header.php';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
+
+$mantenimientos = $mantenimientos ?? [];
 ?>
 <div class="container-fluid mt-4">
     <div class="row mb-4">
@@ -69,7 +71,7 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
                                 ?>
                                 <span class="badge <?= $clase ?>"><?= ucfirst($m['estado']) ?></span>
                             </td>
-                            <td>
+                            <td style="white-space: nowrap;">
                                 <?php if ($m['estado'] != 'finalizado'): ?>
                                     <a href="/Sistema_RentACar/index.php?controller=Mantenimientos&action=finalizar&id=<?= $m['id_mantenimiento'] ?>" class="btn btn-sm btn-success" onclick="return confirm('¿Marcar como finalizado?')" title="Finalizar">
                                         <i class="fas fa-check"></i>

@@ -3,6 +3,8 @@ $titulo = 'Gestión de Vehículos';
 $seccion = 'vehiculos';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_header.php';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
+
+$vehiculos = $vehiculos ?? [];
 ?>
 <div class="container-fluid mt-4">
     <div class="row mb-4">
@@ -24,7 +26,7 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="fas fa-list me-2"></i>Lista de Vehículos</span>
-            <a href="<?= url('index.php?controller=Vehiculos&action=form') ?>" class="btn btn-primary btn-sm">
+            <a href="/Sistema_RentACar/index.php?controller=Vehiculos&action=form" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Nuevo Vehículo
             </a>
         </div>
@@ -34,6 +36,7 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Imagen</th>
                             <th>Nombre</th>
                             <th>Marca/Modelo</th>
                             <th>Año</th>
@@ -45,21 +48,18 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
                     </thead>
                     <tbody>
                         <?php foreach ($vehiculos as $v): ?>
-
-                            <th>Imagen</th>
-// dentro del foreach:
-<td>
-    <?php 
-    $imagenes = Vehiculo::getImagenes($v['id_vehiculo']);
-    if (!empty($imagenes)): 
-    ?>
-        <img src="<?= $imagenes[0] ?>" width="50" height="50" class="rounded">
-    <?php else: ?>
-        <span class="text-muted">Sin imagen</span>
-    <?php endif; ?>
-</td>
                         <tr>
                             <td><?= $v['id_vehiculo'] ?></td>
+                            <td>
+                                <?php 
+                                $imagenes = Vehiculo::getImagenes($v['id_vehiculo']);
+                                if (!empty($imagenes)): 
+                                ?>
+                                    <img src="<?= $imagenes[0] ?>" width="50" height="50" class="rounded">
+                                <?php else: ?>
+                                    <span class="text-muted">Sin imagen</span>
+                                <?php endif; ?>
+                            </td>
                             <td><?= htmlspecialchars($v['car_name']) ?></td>
                             <td><?= htmlspecialchars($v['marca'] . ' ' . $v['modelo']) ?></td>
                             <td><?= $v['year'] ?></td>
@@ -76,10 +76,15 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
                                 </span>
                             </td>
                             <td>
-                                <a href="<?= url('index.php?controller=Vehiculos&action=form&id=' . $v['id_vehiculo']) ?>" class="btn btn-sm btn-outline-primary">
+                                <a href="/Sistema_RentACar/index.php?controller=Vehiculos&action=form&id=<?= $v['id_vehiculo'] ?>" class="btn btn-sm btn-outline-primary" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <button class="btn btn-sm btn-outline-danger" onclick="eliminarVehiculo(<?= $v['id_vehiculo'] ?>)">
+                                <?php if ($v['estado'] != 'mantenimiento'): ?>
+                                    <a href="/Sistema_RentACar/index.php?controller=Mantenimientos&action=nuevo&id_vehiculo=<?= $v['id_vehiculo'] ?>" class="btn btn-sm btn-outline-warning" title="Enviar a mantenimiento">
+                                        <i class="fas fa-wrench"></i>
+                                    </a>
+                                <?php endif; ?>
+                                <button class="btn btn-sm btn-outline-danger" onclick="eliminarVehiculo(<?= $v['id_vehiculo'] ?>)" title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -95,7 +100,7 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
 <script>
 function eliminarVehiculo(id) {
     if (confirm('¿Está seguro de eliminar este vehículo?')) {
-        window.location.href = '<?= url('index.php?controller=Vehiculos&action=eliminar&id=') ?>' + id;
+        window.location.href = '/Sistema_RentACar/index.php?controller=Vehiculos&action=eliminar&id=' + id;
     }
 }
 </script>

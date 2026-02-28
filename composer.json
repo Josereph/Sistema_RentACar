@@ -10,6 +10,7 @@
     "require": {
         "mpdf/mpdf": "^8.2",
         "phpmailer/phpmailer": "^7.0",
-        "google/apiclient": "^2.19"
+        "google/apiclient": "^2.19",
+        "endroid/qr-code": "6.0.9"
     }
 }

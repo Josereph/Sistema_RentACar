@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Reserva.
 
 class VehiculosController extends BaseAdminController
 {
-    // Listado de vehículos (CRUD)
     public function index()
     {
         parent::__construct();
@@ -15,7 +14,6 @@ class VehiculosController extends BaseAdminController
         require PROJECT_ROOT_FS . '/views/admin/vehiculos/index.php';
     }
 
-    // Formulario para crear/editar (podría ser modal, pero aquí usaremos una vista aparte)
     public function form()
     {
         parent::__construct();
@@ -30,79 +28,74 @@ class VehiculosController extends BaseAdminController
     }
 
     public function guardar()
-{
-    parent::__construct();
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        die('Método no permitido');
+    {
+        parent::__construct();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            die('Método no permitido');
+        }
+
+        $id = $_POST['id'] ?? 0;
+        $data = [
+            'car_name'      => $_POST['car_name'],
+            'modelo'        => $_POST['modelo'],
+            'year'          => $_POST['year'],
+            'marca'         => $_POST['marca'],
+            'color'         => $_POST['color'],
+            'tipo_vehiculo' => $_POST['tipo_vehiculo'],
+            'capacidad'     => $_POST['capacidad'],
+            'numero_placa'  => $_POST['numero_placa'],
+            'precio_dia'    => $_POST['precio_dia'],
+            'descripcion'   => $_POST['descripcion'],
+            'estado'        => $_POST['estado']
+        ];
+
+        if ($id) {
+            Vehiculo::update($id, $data);
+            $vehiculo_id = $id;
+            $mensaje = 'editado';
+        } else {
+            $vehiculo_id = Vehiculo::create($data);
+            $mensaje = 'creado';
+        }
+
+        $this->procesarImagenes($vehiculo_id);
+
+        header('Location: /Sistema_RentACar/index.php?controller=Vehiculos&action=index&success=' . $mensaje);
+        exit;
     }
-
-    $id = $_POST['id'] ?? 0;
-    $data = [
-        'car_name'      => $_POST['car_name'],
-        'modelo'        => $_POST['modelo'],
-        'year'          => $_POST['year'],
-        'marca'         => $_POST['marca'],
-        'color'         => $_POST['color'],
-        'tipo_vehiculo' => $_POST['tipo_vehiculo'],
-        'capacidad'     => $_POST['capacidad'],
-        'numero_placa'  => $_POST['numero_placa'],
-        'precio_dia'    => $_POST['precio_dia'],
-        'descripcion'   => $_POST['descripcion'],
-        'estado'        => $_POST['estado']
-    ];
-
-    if ($id) {
-        Vehiculo::update($id, $data);
-        $vehiculo_id = $id;
-        $mensaje = 'editado';
-    } else {
-        $vehiculo_id = Vehiculo::create($data);
-        $mensaje = 'creado';
-    }
-
-    // Procesar imágenes
-    $this->procesarImagenes($vehiculo_id);
-
-    header('Location: ' . url('index.php?controller=Vehiculos&action=index&success=' . $mensaje));
-    exit;
-}
-
 
     private function procesarImagenes($vehiculo_id)
-{
-    if (empty($_FILES['imagenes']['name'][0])) {
-        return;
-    }
+    {
+        if (empty($_FILES['imagenes']['name'][0])) {
+            return;
+        }
 
-    $archivos = $_FILES['imagenes'];
-    $total = count($archivos['name']);
-    if ($total > 4) {
-        $_SESSION['error_imagenes'] = 'Máximo 4 imágenes';
-        return;
-    }
+        $archivos = $_FILES['imagenes'];
+        $total = count($archivos['name']);
+        if ($total > 4) {
+            $_SESSION['error_imagenes'] = 'Máximo 4 imágenes';
+            return;
+        }
 
-    $carpeta_destino = PROJECT_ROOT_FS . '/assets/img/vehiculos/';
-    if (!file_exists($carpeta_destino)) {
-        mkdir($carpeta_destino, 0777, true);
-    }
+        $carpeta_destino = PROJECT_ROOT_FS . '/assets/img/vehiculos/';
+        if (!file_exists($carpeta_destino)) {
+            mkdir($carpeta_destino, 0777, true);
+        }
 
-    // Eliminar imágenes anteriores para este vehículo
-    $patron = $carpeta_destino . $vehiculo_id . '_*.{jpg,jpeg,png,gif}';
-    foreach (glob($patron, GLOB_BRACE) as $archivo) {
-        unlink($archivo);
-    }
+        $patron = $carpeta_destino . $vehiculo_id . '_*.{jpg,jpeg,png,gif}';
+        foreach (glob($patron, GLOB_BRACE) as $archivo) {
+            unlink($archivo);
+        }
 
-    // Guardar nuevas imágenes
-    for ($i = 0; $i < $total; $i++) {
-        if ($archivos['error'][$i] == UPLOAD_ERR_OK) {
-            $extension = pathinfo($archivos['name'][$i], PATHINFO_EXTENSION);
-            $nombre_archivo = $vehiculo_id . '_' . ($i+1) . '.' . $extension;
-            $ruta_destino = $carpeta_destino . $nombre_archivo;
-            move_uploaded_file($archivos['tmp_name'][$i], $ruta_destino);
+        for ($i = 0; $i < $total; $i++) {
+            if ($archivos['error'][$i] == UPLOAD_ERR_OK) {
+                $extension = pathinfo($archivos['name'][$i], PATHINFO_EXTENSION);
+                $nombre_archivo = $vehiculo_id . '_' . ($i+1) . '.' . $extension;
+                $ruta_destino = $carpeta_destino . $nombre_archivo;
+                move_uploaded_file($archivos['tmp_name'][$i], $ruta_destino);
+            }
         }
     }
-}
-
 
     public function eliminar()
     {
@@ -111,7 +104,7 @@ class VehiculosController extends BaseAdminController
         if ($id) {
             Vehiculo::delete($id);
         }
-        header('Location: ' . url('index.php?controller=Vehiculos&action=index&success=eliminado'));
+        header('Location: /Sistema_RentACar/index.php?controller=Vehiculos&action=index&success=eliminado');
         exit;
     }
 
@@ -125,7 +118,6 @@ class VehiculosController extends BaseAdminController
         exit;
     }
 
-    // Calendario (existente)
     public function calendario()
     {
         parent::__construct();
@@ -147,44 +139,11 @@ class VehiculosController extends BaseAdminController
                 'start' => $r['fecha_recogida'],
                 'end'   => date('Y-m-d', strtotime($r['fecha_entrega'] . ' +1 day')),
                 'color' => '#137fec',
-                'url'   => url('index.php?controller=Devolucion&action=index&reserva=' . $r['id_reserva'])
+                'url'   => '/Sistema_RentACar/index.php?controller=Devolucion&action=index&reserva=' . $r['id_reserva']
             ];
         }
         header('Content-Type: application/json');
         echo json_encode($eventos);
         exit;
     }
-
-
-
-public function exportarExcel()
-{
-    parent::__construct();
-    $vehiculos = Vehiculo::all(); // Asegúrate de que este método exista
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="vehiculos_' . date('Y-m-d') . '.csv"');
-    $output = fopen('php://output', 'w');
-    fputcsv($output, ['ID', 'Nombre', 'Marca', 'Modelo', 'Año', 'Placa', 'Color', 'Tipo', 'Capacidad', 'Precio/día', 'Estado']);
-    foreach ($vehiculos as $v) {
-        fputcsv($output, [
-            $v['id_vehiculo'],
-            $v['car_name'],
-            $v['marca'],
-            $v['modelo'],
-            $v['year'],
-            $v['numero_placa'],
-            $v['color'],
-            $v['tipo_vehiculo'],
-            $v['capacidad'],
-            $v['precio_dia'],
-            $v['estado']
-        ]);
-    }
-    fclose($output);
-    exit;
-}
-
-    
-
-
 }

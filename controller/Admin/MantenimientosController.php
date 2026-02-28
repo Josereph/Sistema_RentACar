@@ -2,7 +2,7 @@
 require_once __DIR__ . '/BaseAdminController.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Mantenimiento.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Vehiculo.php';
-require_once __DIR__ . '/../../helpers/EmailHelper.php'; // AÑADIDO
+require_once __DIR__ . '/../../config/db.php';
 
 class MantenimientosController extends BaseAdminController
 {
@@ -19,6 +19,7 @@ class MantenimientosController extends BaseAdminController
     {
         parent::__construct();
         $vehiculos = Vehiculo::all();
+        $id_vehiculo_seleccionado = $_GET['id_vehiculo'] ?? 0;
         $titulo = 'Nuevo Mantenimiento';
         $seccion = 'mantenimientos';
         require PROJECT_ROOT_FS . '/views/admin/mantenimientos/form.php';
@@ -44,8 +45,9 @@ class MantenimientosController extends BaseAdminController
 
         Mantenimiento::create($data);
 
-        // Opcional: notificar a clientes con reservas en ese vehículo (próximas)
-        // (Implementar según necesidad)
+        if (in_array($data['estado'], ['programado', 'en_proceso'])) {
+            Vehiculo::cambiarEstado($data['id_vehiculo'], 'mantenimiento');
+        }
 
         header('Location: /Sistema_RentACar/index.php?controller=Mantenimientos&action=index&success=creado');
         exit;
@@ -84,7 +86,16 @@ class MantenimientosController extends BaseAdminController
             'estado' => $_POST['estado']
         ];
 
+        $anterior = Mantenimiento::find($id);
         Mantenimiento::update($id, $data);
+
+        if (!in_array($anterior['estado'], ['programado', 'en_proceso']) && in_array($data['estado'], ['programado', 'en_proceso'])) {
+            Vehiculo::cambiarEstado($data['id_vehiculo'], 'mantenimiento');
+        }
+        if ($data['estado'] == 'finalizado' && in_array($anterior['estado'], ['programado', 'en_proceso'])) {
+            Vehiculo::cambiarEstado($data['id_vehiculo'], 'disponible'); // CORREGIDO: era cobrarEstado
+        }
+
         header('Location: /Sistema_RentACar/index.php?controller=Mantenimientos&action=index&success=editado');
         exit;
     }
@@ -94,7 +105,11 @@ class MantenimientosController extends BaseAdminController
         parent::__construct();
         $id = $_GET['id'] ?? 0;
         if ($id) {
+            $mantenimiento = Mantenimiento::find($id);
             Mantenimiento::delete($id);
+            if ($mantenimiento && in_array($mantenimiento['estado'], ['programado', 'en_proceso'])) {
+                Vehiculo::cambiarEstado($mantenimiento['id_vehiculo'], 'disponible');
+            }
         }
         header('Location: /Sistema_RentACar/index.php?controller=Mantenimientos&action=index&success=eliminado');
         exit;
@@ -118,6 +133,7 @@ class MantenimientosController extends BaseAdminController
                     'estado' => 'finalizado'
                 ];
                 Mantenimiento::update($id, $data);
+                Vehiculo::cambiarEstado($mantenimiento['id_vehiculo'], 'disponible');
             }
         }
         header('Location: /Sistema_RentACar/index.php?controller=Mantenimientos&action=index&success=finalizado');

@@ -16,13 +16,17 @@ class Usuario
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public static function findById($id)
-    {
-        $db = Database::connect();
-        $stmt = $db->prepare("SELECT * FROM tbUsuarios WHERE id_usuario = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+   public static function findById($id)
+{
+    $db = Database::connect();
+    $sql = "SELECT u.*, r.nombre AS rol_nombre
+            FROM tbUsuarios u
+            INNER JOIN tbRoles r ON u.id_rol = r.id_rol
+            WHERE u.id_usuario = ?";
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC); // Devuelve array o false
+}
 
     public static function findByOAuth($provider, $uid)
     {
@@ -39,7 +43,6 @@ class Usuario
     public static function createFromGoogle($data)
     {
         $db = Database::connect();
-        // Asignar rol por defecto (operador)
         $rol = $db->query("SELECT id_rol FROM tbRoles WHERE nombre = 'operador'")->fetchColumn();
         if (!$rol) {
             $rol = 3;

@@ -3,6 +3,9 @@ $titulo = isset($mantenimiento) ? 'Editar Mantenimiento' : 'Nuevo Mantenimiento'
 $seccion = 'mantenimientos';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_header.php';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
+
+// Si viene un id_vehiculo por GET, lo preseleccionamos
+$id_vehiculo_seleccionado = $_GET['id_vehiculo'] ?? 0;
 ?>
 <div class="container-fluid mt-4">
     <div class="row mb-4">
@@ -24,7 +27,15 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
                         <select name="id_vehiculo" class="form-control" required>
                             <option value="">Seleccionar vehículo</option>
                             <?php foreach ($vehiculos as $v): ?>
-                                <option value="<?= $v['id_vehiculo'] ?>" <?= (isset($mantenimiento) && $mantenimiento['id_vehiculo'] == $v['id_vehiculo']) ? 'selected' : '' ?>>
+                                <?php 
+                                $selected = '';
+                                if (isset($mantenimiento) && $mantenimiento['id_vehiculo'] == $v['id_vehiculo']) {
+                                    $selected = 'selected';
+                                } elseif ($id_vehiculo_seleccionado == $v['id_vehiculo']) {
+                                    $selected = 'selected';
+                                }
+                                ?>
+                                <option value="<?= $v['id_vehiculo'] ?>" <?= $selected ?>>
                                     <?= htmlspecialchars($v['marca'] . ' ' . $v['modelo'] . ' (' . $v['numero_placa'] . ')') ?>
                                 </option>
                             <?php endforeach; ?>

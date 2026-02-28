@@ -18,42 +18,26 @@ class Vehiculo
     }
 
     public static function create($data)
-{
-    $db = Database::connect();
-    $sql = "INSERT INTO tbVehiculos (car_name, modelo, year, marca, color, tipo_vehiculo, capacidad, numero_placa, precio_dia, descripcion, estado)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $db->prepare($sql);
-    if ($stmt->execute([
-        $data['car_name'],
-        $data['modelo'],
-        $data['year'],
-        $data['marca'],
-        $data['color'],
-        $data['tipo_vehiculo'],
-        $data['capacidad'],
-        $data['numero_placa'],
-        $data['precio_dia'],
-        $data['descripcion'],
-        $data['estado']
-    ])) {
+    {
+        $db = Database::connect();
+        $sql = "INSERT INTO tbVehiculos (car_name, modelo, year, marca, color, tipo_vehiculo, capacidad, numero_placa, precio_dia, descripcion, estado)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([
+            $data['car_name'],
+            $data['modelo'],
+            $data['year'],
+            $data['marca'],
+            $data['color'],
+            $data['tipo_vehiculo'],
+            $data['capacidad'],
+            $data['numero_placa'],
+            $data['precio_dia'],
+            $data['descripcion'],
+            $data['estado']
+        ]);
         return $db->lastInsertId();
     }
-    return false;
-}
-
-
-public static function getImagenes($id)
-{
-    $carpeta = PROJECT_ROOT_FS . '/assets/img/vehiculos/';
-    $patron = $carpeta . $id . '_*.{jpg,jpeg,png,gif}';
-    $archivos = glob($patron, GLOB_BRACE);
-    $imagenes = [];
-    foreach ($archivos as $archivo) {
-        $imagenes[] = '/Sistema_RentACar/assets/img/vehiculos/' . basename($archivo);
-    }
-    return $imagenes;
-}
-
 
     public static function update($id, $data)
     {
@@ -86,7 +70,15 @@ public static function getImagenes($id)
         return $stmt->execute([$id]);
     }
 
-    // Métodos para estadísticas (ya existentes)
+    // Método específico para cambiar estado (útil para mantenimientos)
+    public static function cambiarEstado($id, $estado)
+    {
+        $db = Database::connect();
+        $stmt = $db->prepare("UPDATE tbVehiculos SET estado = ? WHERE id_vehiculo = ?");
+        return $stmt->execute([$estado, $id]);
+    }
+
+    // Métodos para estadísticas
     public static function countDisponibles()
     {
         $db = Database::connect();
@@ -111,6 +103,16 @@ public static function getImagenes($id)
         return $db->query("SELECT COUNT(*) FROM tbVehiculos")->fetchColumn();
     }
 
-    
-
+    // Obtener imágenes
+    public static function getImagenes($id)
+    {
+        $carpeta = PROJECT_ROOT_FS . '/assets/img/vehiculos/';
+        $patron = $carpeta . $id . '_*.{jpg,jpeg,png,gif}';
+        $archivos = glob($patron, GLOB_BRACE);
+        $imagenes = [];
+        foreach ($archivos as $archivo) {
+            $imagenes[] = '/Sistema_RentACar/assets/img/vehiculos/' . basename($archivo);
+        }
+        return $imagenes;
+    }
 }

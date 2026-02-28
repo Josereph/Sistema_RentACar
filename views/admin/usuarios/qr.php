@@ -59,19 +59,15 @@ $roles = $roles ?? [];
                                 </span>
                             </td>
                             <td>
-                                
-                                <!-- Botón para editar -->
                                 <button class="btn btn-sm btn-outline-primary" onclick="editUsuario(<?= $u['id_usuario'] ?>)">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <!-- Botón para eliminar -->
                                 <button class="btn btn-sm btn-outline-danger" onclick="deleteUsuario(<?= $u['id_usuario'] ?>)">
                                     <i class="fas fa-trash"></i>
                                 </button>
-                                <!-- Botón para generar QR (nuevo) -->
-                                <a href="/Sistema_RentACar/index.php?controller=AsistenciaAdmin&action=qr&id=<?= $u['id_usuario'] ?>" class="btn btn-sm btn-outline-info" title="Ver QR">
-        <i class="fas fa-qrcode"></i>
-    </a>
+                                <a href="/Sistema_RentACar/index.php?controller=AsistenciaAdmin&action=qr&id=<?= $u['id_usuario'] ?>" class="btn btn-sm btn-outline-info" title="Generar QR">
+                                    <i class="fas fa-qrcode"></i>
+                                </a>
                             </td>
                         </tr>
                         <?php endforeach; ?>

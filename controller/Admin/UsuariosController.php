@@ -7,7 +7,7 @@ class UsuariosController extends BaseAdminController
     public function index()
     {
         parent::__construct();
-        $this->checkRol(['superadmin']); // Solo superadmin puede ver usuarios
+        // Eliminado checkRol, ahora cualquier usuario autenticado puede acceder
 
         $db = Database::connect();
         $usuarios = $db->query("
@@ -21,14 +21,13 @@ class UsuariosController extends BaseAdminController
 
         $titulo = 'Gestión de Usuarios';
         $seccion = 'usuarios';
-        include __DIR__ . '/../../views/admin/usuarios/index.php';
+        require PROJECT_ROOT_FS . '/views/admin/usuarios/index.php';
     }
 
     public function crear()
     {
         parent::__construct();
-        $this->checkRol(['superadmin']);
-
+        // Sin restricción
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nombre = $_POST['nombre'];
             $correo = $_POST['correo'];
@@ -39,15 +38,13 @@ class UsuariosController extends BaseAdminController
             $db = Database::connect();
             $stmt = $db->prepare("INSERT INTO tbUsuarios (id_rol, nombre, correo, password_hash, estado) VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([$id_rol, $nombre, $correo, $password, $estado]);
-            header('Location: index.php?controller=Usuarios&action=index');
+            header('Location: /Sistema_RentACar/index.php?controller=Usuarios&action=index');
         }
     }
 
     public function editar()
     {
         parent::__construct();
-        $this->checkRol(['superadmin']);
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $nombre = $_POST['nombre'];
@@ -64,20 +61,19 @@ class UsuariosController extends BaseAdminController
                 $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
                 $db->prepare("UPDATE tbUsuarios SET password_hash = ? WHERE id_usuario = ?")->execute([$password, $id]);
             }
-            header('Location: index.php?controller=Usuarios&action=index');
+            header('Location: /Sistema_RentACar/index.php?controller=Usuarios&action=index');
         }
     }
 
     public function eliminar()
     {
         parent::__construct();
-        $this->checkRol(['superadmin']);
         $id = $_GET['id'] ?? 0;
         if ($id) {
             $db = Database::connect();
             $db->prepare("DELETE FROM tbUsuarios WHERE id_usuario = ?")->execute([$id]);
         }
-        header('Location: index.php?controller=Usuarios&action=index');
+        header('Location: /Sistema_RentACar/index.php?controller=Usuarios&action=index');
     }
 
     public function getJson()

@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Contrato
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Pago.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Cliente.php';
 require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/Vehiculo.php';
-require_once __DIR__ . '/../../helpers/EmailHelper.php'; // <-- AÑADIDO
+require_once __DIR__ . '/../../helpers/EmailHelper.php';
 
 class ReservasController extends BaseAdminController
 {
@@ -83,9 +83,7 @@ class ReservasController extends BaseAdminController
 
             $db->commit();
 
-            // Enviar correo de confirmación
             $cliente = Cliente::find($id_cliente);
-            $vehiculo = Vehiculo::find($id_vehiculo);
             $datosCorreo = [
                 'vehiculo' => $vehiculo['marca'] . ' ' . $vehiculo['modelo'] . ' (' . $vehiculo['numero_placa'] . ')',
                 'fecha_recogida' => date('d/m/Y', strtotime($fecha_recogida)),

@@ -8,20 +8,17 @@ class ClientesController extends BaseAdminController
     public function index()
     {
         parent::__construct();
-
         $clientes = Cliente::all();
         $totalClientes = Cliente::count();
         $activos = Cliente::countActivos();
         $nuevosMes = Cliente::countNuevosMes();
         $inactivos = $totalClientes - $activos;
-
         require PROJECT_ROOT_FS . '/views/admin/clientes/index.php';
     }
 
     public function crear()
     {
         parent::__construct();
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'nombre'    => $_POST['nombre'],
@@ -42,7 +39,6 @@ class ClientesController extends BaseAdminController
     public function editar()
     {
         parent::__construct();
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'] ?? 0;
             $data = [
@@ -64,7 +60,6 @@ class ClientesController extends BaseAdminController
     public function eliminar()
     {
         parent::__construct();
-
         $id = $_GET['id'] ?? 0;
         if ($id) {
             Cliente::delete($id);

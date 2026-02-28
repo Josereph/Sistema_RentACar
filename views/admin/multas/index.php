@@ -3,6 +3,9 @@ $titulo = 'Multas Pendientes';
 $seccion = 'multas';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_header.php';
 include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
+
+$multas = $multas ?? [];
+$rol = $_SESSION['admin_rol'] ?? 'operador';
 ?>
 <div class="container-fluid mt-4">
     <div class="row mb-4">
@@ -41,9 +44,13 @@ include PROJECT_ROOT_FS . '/views/admin/layouts/admin_navbar.php';
                                 <td class="text-danger fw-bold">$<?= number_format($m['monto'], 2) ?></td>
                                 <td><?= date('d/m/Y', strtotime($m['created_at'])) ?></td>
                                 <td>
-                                    <a href="/Sistema_RentACar/index.php?controller=Multas&action=pagar&id=<?= $m['id_multa'] ?>" class="btn btn-sm btn-success" onclick="return confirm('¿Marcar esta multa como pagada?')">
-                                        <i class="fas fa-check"></i> Pagada
-                                    </a>
+                                    <?php if ($rol === 'admin'): ?>
+                                        <a href="/Sistema_RentACar/index.php?controller=Multas&action=pagar&id=<?= $m['id_multa'] ?>" class="btn btn-sm btn-success" onclick="return confirm('¿Marcar esta multa como pagada?')">
+                                            <i class="fas fa-check"></i> Pagada
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted">No disponible</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
