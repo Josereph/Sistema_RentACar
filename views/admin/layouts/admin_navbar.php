@@ -8,7 +8,7 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
     <div class="container-fluid">
         <!-- Logo y nombre de la empresa -->
         <a class="navbar-brand d-flex align-items-center" href="/Sistema_RentACar/index.php?controller=Dashboard&action=index">
-            <img src="/Sistema_RentACar/assets/img/logo.png" alt="GoCar" height="40" class="me-2">
+            <img src="/Sistema_RentACar/assets/img/img.jpeg" alt="GoCar" height="40" class="me-2">
             <span class="fw-bold" style="color: #ffffff;">GoCar</span>
             <span class="ms-1 small" style="color: #137fec;">Rent A Car</span>
         </a>
@@ -51,7 +51,6 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" style="background-color: #101922; border: 1px solid #137fec;">
                         <li><a class="dropdown-item <?= $seccion == 'devoluciones' ? 'active' : '' ?>" href="/Sistema_RentACar/index.php?controller=Devolucion&action=listado"><i class="fas fa-undo-alt me-2"></i>Devoluciones</a></li>
-                        <li><a class="dropdown-item <?= $seccion == 'checklist' ? 'active' : '' ?>" href="/Sistema_RentACar/index.php?controller=Checklist&action=index"><i class="fas fa-clipboard-check me-2"></i>Checklist</a></li>
                         <li><a class="dropdown-item <?= $seccion == 'mantenimientos' ? 'active' : '' ?>" href="/Sistema_RentACar/index.php?controller=Mantenimientos&action=index"><i class="fas fa-wrench me-2"></i>Mantenimientos</a></li>
                         <li><a class="dropdown-item <?= $seccion == 'asistencia' ? 'active' : '' ?>" href="/Sistema_RentACar/index.php?controller=AsistenciaAdmin&action=index"><i class="fas fa-clock me-2"></i>Asistencia</a></li>
                     </ul>
