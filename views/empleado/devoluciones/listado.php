@@ -1,8 +1,8 @@
 <?php
 $titulo = 'Listado de Devoluciones';
 $seccion = 'devoluciones';
-include PROJECT_ROOT_FS . '/views/empleado/layouts/header.php';
-include PROJECT_ROOT_FS . '/views/empleado/layouts/navbar.php';
+include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_header.php';
+include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_navbar.php';
 
 $devoluciones = $devoluciones ?? [];
 ?>
@@ -68,4 +68,4 @@ $devoluciones = $devoluciones ?? [];
         </div>
     </div>
 </div>
-<?php include PROJECT_ROOT_FS . '/views/empleado/layouts/footer.php'; ?>
+<?php include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_footer.php'; ?>

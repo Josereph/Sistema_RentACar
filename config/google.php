@@ -15,4 +15,4 @@ if (file_exists(PROJECT_ROOT_FS . '/.env')) {
 
 define('GOOGLE_CLIENT_ID', getenv('GOOGLE_CLIENT_ID') ?: '');
 define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: '');
-define('GOOGLE_REDIRECT_URI', 'http://localhost/Sistema_RentACar/index.php?controller=GoogleAuth&action=callback');
+define('GOOGLE_REDIRECT_URI', 'http://localhost/Sistema_RentACar/index.php?area=cliente&controller=GoogleAuth&action=callback');

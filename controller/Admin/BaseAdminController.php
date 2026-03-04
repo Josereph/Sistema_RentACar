@@ -1,23 +1,24 @@
 <?php
-// controller/Admin/BaseAdminController.php
-
 class BaseAdminController
 {
     public function __construct()
     {
-        // Iniciar sesión si no está iniciada
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Verificar si el usuario está logueado como admin
         if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_logged'] !== true) {
-            header('Location: index.php?controller=Auth&action=login');
+            // Si es AJAX, responder con JSON
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                header('HTTP/1.1 401 Unauthorized');
+                echo json_encode(['error' => 'Sesión expirada']);
+                exit;
+            }
+            header('Location: /Sistema_RentACar/index.php?area=admin&controller=Auth&action=login');
             exit;
         }
     }
 
-    // Método opcional para verificar roles específicos
     protected function checkRol($rolesPermitidos)
     {
         if (!in_array($_SESSION['admin_rol'], $rolesPermitidos)) {

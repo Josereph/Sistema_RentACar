@@ -4,21 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoCar - Iniciar Sesión</title>
-    <!-- Google Fonts y Material Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <!-- Estilos personalizados -->
     <link rel="stylesheet" href="/Sistema_RentACar/assets/css/admin/login.css">
 </head>
 <body>
 
-<!-- Canvas para partículas (opcional) -->
 <canvas id="particles"></canvas>
 
-<!-- Contenido principal -->
 <main class="main">
     <div class="split">
-        <!-- Lado izquierdo con imagen y parallax -->
         <div class="hero" id="hero">
             <div class="hero-image" id="heroImage"></div>
             <div class="hero-overlay"></div>
@@ -38,7 +33,6 @@
             </div>
         </div>
 
-        <!-- Lado derecho con formulario -->
         <div class="form-side">
             <div class="form-container">
                 <div class="form-header">
@@ -46,8 +40,8 @@
                     <p>Tu mejor opción para alquilar</p>
                 </div>
 
-                <!-- Formulario tradicional -->
-                <form action="/Sistema_RentACar/index.php?controller=Auth&action=login" method="POST">
+                <!-- Formulario para clientes -->
+                <form action="/Sistema_RentACar/index.php?area=admin&controller=Auth&action=login" method="POST">
                     <div class="input-group">
                         <label class="input-label">Correo electrónico</label>
                         <div class="input-wrapper">
@@ -65,7 +59,6 @@
                                 <span class="material-symbols-outlined">visibility</span>
                             </button>
                         </div>
-                        <!-- Enlace de olvido eliminado -->
                     </div>
 
                     <button type="submit" class="submit-btn">Continuar</button>
@@ -77,8 +70,7 @@
                     <span class="divider-line"></span>
                 </div>
 
-                <!-- Botón de Google -->
-                <a href="/Sistema_RentACar/index.php?controller=GoogleAuth&action=login" class="google-btn">
+                <a href="/Sistema_RentACar/index.php?area=cliente&controller=GoogleAuth&action=login" class="google-btn">
                     <svg width="20" height="20" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
@@ -92,15 +84,17 @@
                     Al continuar, aceptas nuestros Términos y Política de Privacidad.
                 </div>
 
-                <div class="register-link">
-                    ¿No tienes cuenta? <a href="#">Regístrate</a>
+                <div class="text-center mt-4 text-sm text-[#92adc9]">
+                    ¿No tienes cuenta? 
+                    <a href="/Sistema_RentACar/index.php?area=cliente&controller=Cliente&action=registro" class="text-primary hover:underline">
+                        Regístrate
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </main>
 
-<!-- Scripts -->
 <script src="/Sistema_RentACar/assets/js/admin/login.js"></script>
 </body>
 </html>

@@ -2,7 +2,8 @@
 // controller/Admin/GoogleAuthController.php
 require_once __DIR__ . '/../../config/google.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../models/Admin/Usuario.php';
+// Ya no necesitamos Usuario.php, ahora usamos ClienteModel
+require_once __DIR__ . '/../../models/AdministracionClientesOperaciones/ClienteModel.php';
 
 class GoogleAuthController
 {
@@ -13,7 +14,6 @@ class GoogleAuthController
         }
 
         $client = new Google_Client();
-        // 🔓 Deshabilitar verificación SSL para entorno local
         $client->setHttpClient(new \GuzzleHttp\Client(['verify' => false]));
         $client->setClientId(GOOGLE_CLIENT_ID);
         $client->setClientSecret(GOOGLE_CLIENT_SECRET);
@@ -52,26 +52,34 @@ class GoogleAuthController
             $oauth = new Google_Service_Oauth2($client);
             $userInfo = $oauth->userinfo->get();
 
-            $usuario = Usuario::findByOAuth('google', $userInfo->id);
+            // Separar nombre y apellido
+            $partes = explode(" ", trim($userInfo->name));
+            $nombre = $partes[0];
+            $apellido = isset($partes[1]) ? implode(" ", array_slice($partes, 1)) : "";
 
-            if (!$usuario) {
-                $data = [
-                    'nombre' => $userInfo->name,
-                    'correo' => $userInfo->email,
-                    'imagen' => $userInfo->picture,
-                    'provider' => 'google',
-                    'uid' => $userInfo->id
-                ];
-                $id_usuario = Usuario::createFromGoogle($data);
-                $usuario = Usuario::findById($id_usuario);
+            $clienteModel = new ClienteModel();
+            $cliente = $clienteModel->obtenerPorCorreo($userInfo->email);
+
+            if (!$cliente) {
+                // Crear nuevo cliente
+                $id_cliente = $clienteModel->crearCliente($nombre, $apellido, $userInfo->email);
+            } else {
+                $id_cliente = $cliente['id_cliente'];
             }
 
-            $_SESSION['admin_logged'] = true;
-            $_SESSION['admin_id'] = $usuario['id_usuario'];
-            $_SESSION['admin_nombre'] = $usuario['nombre'];
-            $_SESSION['admin_rol'] = $usuario['rol_nombre'];
+            // ✅ Iniciar sesión como cliente
+            $_SESSION['cliente_logged'] = true;
+            $_SESSION['cliente_id']     = $id_cliente;
+            $_SESSION['cliente_nombre'] = $nombre . ' ' . $apellido;
+            $_SESSION['cliente_email']  = $userInfo->email;
+            $_SESSION['cliente_oauth'] = [
+                'provider' => 'google',
+                'uid'      => $userInfo->id,
+                'imagen'   => $userInfo->picture,
+            ];
 
-            header('Location: /Sistema_RentACar/index.php?controller=Dashboard&action=index');
+            // Redirigir al perfil (para completar datos si es necesario)
+            header('Location: /Sistema_RentACar/index.php?area=cliente&controller=Cliente&action=perfil');
             exit;
 
         } catch (Exception $e) {

@@ -1,7 +1,10 @@
 <?php
 // Fallback por si alguien abre el archivo directo sin pasar por index.php
 if (!function_exists('url')) {
-  define('BASE_URL', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'));
+  $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+  $base = preg_replace('#/views/ReservaCatalogo/views$#', '', $base);
+  if ($base === '') $base = '/Sistema_RentACar';
+  define('BASE_URL', $base);
   function url($path = '') { return BASE_URL . '/' . ltrim($path, '/'); }
 }
 ?>
@@ -15,9 +18,16 @@ if (!function_exists('url')) {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- Tu style base -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap" rel="stylesheet">
+
+  <!-- BASE GLOBAL -->
+  <link rel="stylesheet" href="<?= url('assets/css/client.css') ?>">
+
+  <!-- TU DISEÑO (ReservaCatalogo) -->
   <link rel="stylesheet" href="<?= url('assets/css/ReservaCatalogo/style.css') ?>">
-  <!-- CSS extra solo para Home -->
   <link rel="stylesheet" href="<?= url('assets/css/ReservaCatalogo/home.css') ?>">
 </head>
 
@@ -277,6 +287,6 @@ if (!function_exists('url')) {
   <?php include __DIR__ . '/../../layouts/footer.php'; ?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="<?= url('assets/js/ReservaCatalogo/script.js') ?>"></script>
+  <script src="<?= url('assets/js/client-ui.js') ?>"></script>
 </body>
 </html>

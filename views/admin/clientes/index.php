@@ -9,7 +9,13 @@ $totalClientes = $totalClientes ?? 0;
 $activos = $activos ?? 0;
 $nuevosMes = $nuevosMes ?? 0;
 $inactivos = $inactivos ?? 0;
-$rol = $_SESSION['admin_rol'] ?? 'operador';
+
+// Función url local (por si acaso)
+if (!function_exists('url')) {
+    function url($path = '') {
+        return '/Sistema_RentACar/' . ltrim($path, '/');
+    }
+}
 ?>
 <div class="container-fluid mt-4">
     <div class="row mb-4">
@@ -20,16 +26,20 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
 
     <?php if (isset($_GET['success'])): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <?php if ($_GET['success'] == 'creado'): ?>Cliente creado exitosamente.
-            <?php elseif ($_GET['success'] == 'editado'): ?>Cliente actualizado exitosamente.
+            <?php if ($_GET['success'] == 'creado'): ?>
+                Cliente creado exitosamente.
+            <?php elseif ($_GET['success'] == 'editado'): ?>
+                Cliente actualizado exitosamente.
             <?php endif; ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
+
     <?php if (isset($_GET['error'])): ?>
         <div class="alert alert-danger">Ocurrió un error. Intente de nuevo.</div>
     <?php endif; ?>
 
+    <!-- Tarjetas de estadísticas -->
     <div class="row mb-4">
         <div class="col-md-3">
             <div class="stat-card">
@@ -61,20 +71,17 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
         </div>
     </div>
 
+    <!-- Listado y botones (siempre visibles para admin/superadmin) -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="fas fa-list me-2"></i>Lista de Clientes</span>
             <div>
-                <?php if ($rol === 'admin'): ?>
-                    <button class="btn btn-primary btn-sm" onclick="openModal('modalNuevoCliente')">
-                        <i class="fas fa-plus"></i> Nuevo Cliente
-                    </button>
-                    <a href="/Sistema_RentACar/index.php?controller=Clientes&action=exportarExcel" class="btn btn-outline-secondary btn-sm">
-                        <i class="fas fa-file-excel"></i> Exportar
-                    </a>
-                <?php else: ?>
-                    <span class="text-muted">Modo solo lectura</span>
-                <?php endif; ?>
+                <button class="btn btn-primary btn-sm" onclick="openModal('modalNuevoCliente')">
+                    <i class="fas fa-plus"></i> Nuevo Cliente
+                </button>
+                <a href="<?= url('index.php?area=admin&controller=Clientes&action=exportarExcel') ?>" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-file-excel"></i> Exportar
+                </a>
             </div>
         </div>
         <div class="card-body">
@@ -104,9 +111,9 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
                                     </div>
                                 </div>
                             </td>
-                            <td><?= htmlspecialchars($c['DUI']) ?></td>
-                            <td><?= htmlspecialchars($c['telefono']) ?></td>
-                            <td><?= htmlspecialchars($c['correo']) ?></td>
+                            <td><?= htmlspecialchars($c['DUI'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($c['telefono'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($c['correo'] ?? '') ?></td>
                             <td>
                                 <?php
                                 $db = Database::connect();
@@ -121,14 +128,12 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <?php if ($rol === 'admin'): ?>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="editCliente(<?= $c['id_cliente'] ?>)" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteCliente(<?= $c['id_cliente'] ?>)" title="Eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                <?php endif; ?>
+                                <button class="btn btn-sm btn-outline-primary" onclick="editCliente(<?= $c['id_cliente'] ?>)" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteCliente(<?= $c['id_cliente'] ?>)" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                                 <a href="#" class="btn btn-sm btn-outline-info" title="Ver historial">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -142,15 +147,14 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
     </div>
 </div>
 
-<!-- MODAL NUEVO CLIENTE (solo para admin) -->
-<?php if ($rol === 'admin'): ?>
+<!-- MODALES (siempre disponibles) -->
 <div class="modal-overlay" id="modalNuevoCliente">
     <div class="modal-box">
         <div class="modal-header">
             <div class="modal-title"><i class="fas fa-user-plus me-2"></i>Nuevo Cliente</div>
             <button class="modal-close" onclick="closeModal('modalNuevoCliente')"><i class="fas fa-times"></i></button>
         </div>
-        <form action="/Sistema_RentACar/index.php?controller=Clientes&action=crear" method="POST">
+        <form action="<?= url('index.php?area=admin&controller=Clientes&action=crear') ?>" method="POST">
             <div class="modal-body">
                 <div class="row g-3">
                     <div class="col-md-6">
@@ -187,14 +191,13 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
     </div>
 </div>
 
-<!-- MODAL EDITAR CLIENTE -->
 <div class="modal-overlay" id="modalEditCliente">
     <div class="modal-box">
         <div class="modal-header">
             <div class="modal-title"><i class="fas fa-pen-to-square me-2"></i>Editar Cliente</div>
             <button class="modal-close" onclick="closeModal('modalEditCliente')"><i class="fas fa-times"></i></button>
         </div>
-        <form action="/Sistema_RentACar/index.php?controller=Clientes&action=editar" method="POST">
+        <form action="<?= url('index.php?area=admin&controller=Clientes&action=editar') ?>" method="POST">
             <input type="hidden" name="id" id="edit_id">
             <div class="modal-body">
                 <div class="row g-3">
@@ -231,14 +234,18 @@ $rol = $_SESSION['admin_rol'] ?? 'operador';
         </form>
     </div>
 </div>
-<?php endif; ?>
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
 
 <script>
 function editCliente(id) {
-    fetch('/Sistema_RentACar/index.php?controller=Clientes&action=getJson&id=' + id)
-        .then(r => r.json())
+    fetch('<?= url('index.php?area=admin&controller=Clientes&action=getJson&id=') ?>' + id)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la petición');
+            }
+            return response.json();
+        })
         .then(d => {
             document.getElementById('edit_id').value = d.id_cliente;
             document.getElementById('edit_nombre').value = d.nombre;
@@ -248,11 +255,16 @@ function editCliente(id) {
             document.getElementById('edit_email').value = d.correo || '';
             document.getElementById('edit_direccion').value = d.direccion || '';
             openModal('modalEditCliente');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('No se pudo cargar la información del cliente.');
         });
 }
+
 function deleteCliente(id) {
     if (confirm('¿Está seguro de eliminar este cliente?')) {
-        window.location.href = '/Sistema_RentACar/index.php?controller=Clientes&action=eliminar&id=' + id;
+        window.location.href = '<?= url('index.php?area=admin&controller=Clientes&action=eliminar&id=') ?>' + id;
     }
 }
 </script>

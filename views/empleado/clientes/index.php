@@ -1,8 +1,8 @@
 <?php
 $titulo = 'Gestión de Clientes';
 $seccion = 'clientes';
-include PROJECT_ROOT_FS . '/views/empleado/layouts/header.php';
-include PROJECT_ROOT_FS . '/views/empleado/layouts/navbar.php';
+include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_header.php';
+include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_navbar.php';
 
 $clientes = $clientes ?? [];
 $totalClientes = $totalClientes ?? 0;
@@ -157,4 +157,4 @@ function verCliente(id) {
 }
 </script>
 
-<?php include PROJECT_ROOT_FS . '/views/empleado/layouts/footer.php'; ?>
+<?php include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_footer.php'; ?>

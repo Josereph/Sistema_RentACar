@@ -1,658 +1,444 @@
-<!DOCTYPE html>
-<html lang="es">
-
 <?php
-// ============================================
-// DATOS DE VEHÍCULOS 
-// ============================================
-$vehiculos = [
-    'toyota-corolla' => [
-        'nombre' => 'Toyota Corolla',
-        'subtitulo' => 'Sedán Compacto • 2022',
-        'precio' => 85,
-        'badge' => 'SEDAN',
-        'badgeColor' => '#137fec',
-        'rating' => 4.7,
-        'reviews' => 892,
-        'specs' => [
-            ['icon' => 'fa-horse-head', 'label' => 'POTENCIA', 'value' => '169 HP'],
-            ['icon' => 'fa-cog', 'label' => 'TRANSMISIÓN', 'value' => 'CVT'],
-            ['icon' => 'fa-gas-pump', 'label' => 'COMBUSTIBLE', 'value' => 'Gasolina'],
-            ['icon' => 'fa-users', 'label' => 'ASIENTOS', 'value' => '5 Adultos'],
-        ],
-        'amenidades' => [
-            'Toyota Safety Sense',
-            'Apple CarPlay / Android Auto',
-            'Control de crucero adaptativo',
-            'Alerta de cambio de carril',
-            'Conectividad Bluetooth',
-            'Cámara de reversa',
-        ],
-        'imagenes' => [
-            'principal' => 'https://www.motortrend.com/uploads/2021/06/2022-Toyota-Corolla-SE-exterior-front-three-quarter.jpg',
-            'thumbnails' => [
-                ['src' => 'https://www.motortrend.com/uploads/2021/06/2022-Toyota-Corolla-SE-exterior-front-three-quarter.jpg', 'label' => 'Exterior'],
-                ['src' => 'https://www.motortrend.com/uploads/2021/06/2022-Toyota-Corolla-SE-cabin.jpg', 'label' => 'Cabina'],
-                ['src' => 'https://www.motortrend.com/uploads/2021/06/2022-Toyota-Corolla-SE-exterior-rear-three-quarter.jpg', 'label' => 'Trasera'],
-                ['src' => 'https://www.motortrend.com/uploads/2021/06/2022-Toyota-Corolla-SE-interior.jpg', 'label' => 'Interior'],
-            ],
-        ],
-    ],
-    'toyota-rav4' => [
-        'nombre' => 'Toyota RAV4',
-        'subtitulo' => 'SUV Compacto • 2023',
-        'precio' => 110,
-        'badge' => 'SUV',
-        'badgeColor' => '#ff6b35',
-        'rating' => 4.8,
-        'reviews' => 1203,
-        'specs' => [
-            ['icon' => 'fa-horse-head', 'label' => 'POTENCIA', 'value' => '203 HP'],
-            ['icon' => 'fa-cog', 'label' => 'TRANSMISIÓN', 'value' => 'Automática'],
-            ['icon' => 'fa-gas-pump', 'label' => 'COMBUSTIBLE', 'value' => 'Gasolina'],
-            ['icon' => 'fa-users', 'label' => 'ASIENTOS', 'value' => '5 Adultos'],
-        ],
-        'amenidades' => [
-            'Tracción en las 4 ruedas (AWD)',
-            'Toyota Safety Sense 2.0',
-            'Apple CarPlay / Android Auto',
-            'Climatización de doble zona',
-            'Portón eléctrico',
-            'Barras de techo',
-        ],
-        'imagenes' => [
-            'principal' => 'https://www.onlineauto.com.au/contentAsset/image/c5b285b0-bba4-4fc0-bfc7-f04b58346764',
-            'thumbnails' => [
-                ['src' => 'https://www.motortrend.com/uploads/2022/07/2023-Toyota-RAV4-XSE-Hybrid-front-three-quarter.jpg', 'label' => 'Exterior'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/07/2023-Toyota-RAV4-XSE-Hybrid-cabin.jpg', 'label' => 'Cabina'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/07/2023-Toyota-RAV4-XSE-Hybrid-rear-three-quarter.jpg', 'label' => 'Trasera'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/07/2023-Toyota-RAV4-XSE-Hybrid-interior.jpg', 'label' => 'Interior'],
-            ],
-        ],
-    ],
-    'toyota-hilux' => [
-        'nombre' => 'Toyota Hilux',
-        'subtitulo' => 'Pickup • 2023',
-        'precio' => 130,
-        'badge' => 'PICKUP',
-        'badgeColor' => '#e74c3c',
-        'rating' => 4.6,
-        'reviews' => 756,
-        'specs' => [
-            ['icon' => 'fa-horse-head', 'label' => 'POTENCIA', 'value' => '204 HP'],
-            ['icon' => 'fa-cog', 'label' => 'TRANSMISIÓN', 'value' => 'Automática'],
-            ['icon' => 'fa-gas-pump', 'label' => 'COMBUSTIBLE', 'value' => 'Diésel'],
-            ['icon' => 'fa-users', 'label' => 'ASIENTOS', 'value' => '5 Adultos'],
-        ],
-        'amenidades' => [
-            'Tracción 4x4 (4WD)',
-            'Control de crucero',
-            'Pantalla táctil multimedia',
-            'Bloqueo de diferencial trasero',
-            'Suspensión reforzada',
-            'Barra de remolque incluida',
-        ],
-        'imagenes' => [
-            'principal' => 'https://carsguide-res.cloudinary.com/image/upload/c_fit,h_841,w_1490,f_auto,t_cg_base/v1/editorial/2023-Toyota-Hilux-SR5-Ute-White-1001x565-(1).jpg',
-            'thumbnails' => [
-                ['src' => 'https://carsguide-res.cloudinary.com/image/upload/c_fit,h_841,w_1490,f_auto,t_cg_base/v1/editorial/2023-Toyota-Hilux-SR5-Ute-White-1001x565-(1).jpg', 'label' => 'Exterior'],
-                ['src' => 'https://www.motortrend.com/uploads/2023/03/2024-Toyota-Hilux-GR-Sport-cabin.jpg', 'label' => 'Cabina'],
-                ['src' => 'https://www.motortrend.com/uploads/2023/03/2024-Toyota-Hilux-GR-Sport-rear.jpg', 'label' => 'Trasera'],
-                ['src' => 'https://www.motortrend.com/uploads/2023/03/2024-Toyota-Hilux-GR-Sport-interior.jpg', 'label' => 'Interior'],
-            ],
-        ],
-    ],
-    'kia-picanto' => [
-        'nombre' => 'Kia Picanto 2006',
-        'subtitulo' => 'Compacto • 2006',
-        'precio' => 50,
-        'badge' => 'ECONÓMICO',
-        'badgeColor' => '#27ae60',
-        'rating' => 4.2,
-        'reviews' => 345,
-        'specs' => [
-            ['icon' => 'fa-horse-head', 'label' => 'POTENCIA', 'value' => '65 HP'],
-            ['icon' => 'fa-cog', 'label' => 'TRANSMISIÓN', 'value' => 'Manual'],
-            ['icon' => 'fa-gas-pump', 'label' => 'COMBUSTIBLE', 'value' => 'Gasolina'],
-            ['icon' => 'fa-users', 'label' => 'ASIENTOS', 'value' => '4 Adultos'],
-        ],
-        'amenidades' => [
-            'Aire acondicionado',
-            'Dirección asistida',
-            'Cierre centralizado',
-            'Radio / Reproductor CD',
-            'Bajo consumo de combustible',
-            'Estacionamiento compacto urbano',
-        ],
-        'imagenes' => [
-            'principal' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEyeJjtl1_TawqSyTzJe2CDNIXyTpotGsTGQ&s',
-            'thumbnails' => [
-                ['src' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEyeJjtl1_TawqSyTzJe2CDNIXyTpotGsTGQ&s', 'label' => 'Exterior'],
-                ['src' => 'https://www.motortrend.com/uploads/sites/5/2020/01/2006-Kia-Picanto-cabin.jpg', 'label' => 'Cabina'],
-                ['src' => 'https://www.motortrend.com/uploads/sites/5/2020/01/2006-Kia-Picanto-rear.jpg', 'label' => 'Trasera'],
-                ['src' => 'https://www.motortrend.com/uploads/sites/5/2020/01/2006-Kia-Picanto-interior.jpg', 'label' => 'Interior'],
-            ],
-        ],
-    ],
-    'crossover' => [
-        'nombre' => 'Crossover',
-        'subtitulo' => 'Crossover • 2023',
-        'precio' => 95,
-        'badge' => 'CROSSOVER',
-        'badgeColor' => '#9b59b6',
-        'rating' => 4.5,
-        'reviews' => 620,
-        'specs' => [
-            ['icon' => 'fa-horse-head', 'label' => 'POTENCIA', 'value' => '180 HP'],
-            ['icon' => 'fa-cog', 'label' => 'TRANSMISIÓN', 'value' => 'Automática'],
-            ['icon' => 'fa-gas-pump', 'label' => 'COMBUSTIBLE', 'value' => 'Gasolina'],
-            ['icon' => 'fa-users', 'label' => 'ASIENTOS', 'value' => '5 Adultos'],
-        ],
-        'amenidades' => [
-            'Control de crucero adaptativo',
-            'Asistente de mantenimiento de carril',
-            'Apple CarPlay / Android Auto',
-            'Techo solar panorámico',
-            'Encendido por botón',
-            'Sensores de estacionamiento traseros',
-        ],
-        'imagenes' => [
-            'principal' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnpDvvAcYQZRoI0xYMsqetcUbR4n-lPLc_aQ&s',
-            'thumbnails' => [
-                ['src' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnpDvvAcYQZRoI0xYMsqetcUbR4n-lPLc_aQ&s', 'label' => 'Exterior'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/09/2023-crossover-suv-cabin.jpg', 'label' => 'Cabina'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/09/2023-crossover-suv-rear.jpg', 'label' => 'Trasera'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/09/2023-crossover-suv-interior.jpg', 'label' => 'Interior'],
-            ],
-        ],
-    ],
-    'mini' => [
-        'nombre' => 'Mini',
-        'subtitulo' => 'Mini • 2023',
-        'precio' => 60,
-        'badge' => 'MINI',
-        'badgeColor' => '#f39c12',
-        'rating' => 4.4,
-        'reviews' => 410,
-        'specs' => [
-            ['icon' => 'fa-horse-head', 'label' => 'POTENCIA', 'value' => '134 HP'],
-            ['icon' => 'fa-cog', 'label' => 'TRANSMISIÓN', 'value' => 'Automática'],
-            ['icon' => 'fa-gas-pump', 'label' => 'COMBUSTIBLE', 'value' => 'Gasolina'],
-            ['icon' => 'fa-users', 'label' => 'ASIENTOS', 'value' => '4 Adultos'],
-        ],
-        'amenidades' => [
-            'Modo de conducción deportivo',
-            'Pantalla táctil',
-            'Conectividad Bluetooth',
-            'Climatización automática',
-            'Diseño compacto urbano',
-            'Puertos de carga USB',
-        ],
-        'imagenes' => [
-            'principal' => 'https://www.lacuracaonline.com/media/catalog/product/4/6/463101700017_8.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=700&width=700&canvas=700:700',
-            'thumbnails' => [
-                ['src' => 'https://www.lacuracaonline.com/media/catalog/product/4/6/463101700017_8.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=700&width=700&canvas=700:700', 'label' => 'Exterior'],
-                ['src' => 'https://www.motortrend.com/uploads/2021/11/2023-MINI-Cooper-cabin.jpg', 'label' => 'Cabina'],
-                ['src' => 'https://www.motortrend.com/uploads/2021/11/2023-MINI-Cooper-rear.jpg', 'label' => 'Trasera'],
-                ['src' => 'https://www.motortrend.com/uploads/2021/11/2023-MINI-Cooper-interior.jpg', 'label' => 'Interior'],
-            ],
-        ],
-    ],
-    'minivan' => [
-        'nombre' => 'Minivan',
-        'subtitulo' => 'Minivan • 2023',
-        'precio' => 100,
-        'badge' => 'FAMILIAR',
-        'badgeColor' => '#3498db',
-        'rating' => 4.6,
-        'reviews' => 530,
-        'specs' => [
-            ['icon' => 'fa-horse-head', 'label' => 'POTENCIA', 'value' => '260 HP'],
-            ['icon' => 'fa-cog', 'label' => 'TRANSMISIÓN', 'value' => 'Automática'],
-            ['icon' => 'fa-gas-pump', 'label' => 'COMBUSTIBLE', 'value' => 'Gasolina'],
-            ['icon' => 'fa-users', 'label' => 'ASIENTOS', 'value' => '7 Adultos'],
-        ],
-        'amenidades' => [
-            'Puertas traseras corredizas',
-            'Climatización de tres zonas',
-            'Sistema de entretenimiento trasero',
-            'Asientos rebatibles',
-            'Portón eléctrico',
-            'Múltiples puertos USB',
-        ],
-        'imagenes' => [
-            'principal' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAlbrymVJ7spOe0z0N2MCEyXvs8hx1lpldKw&s',
-            'thumbnails' => [
-                ['src' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAlbrymVJ7spOe0z0N2MCEyXvs8hx1lpldKw&s', 'label' => 'Exterior'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/04/2023-Toyota-Sienna-cabin.jpg', 'label' => 'Cabina'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/04/2023-Toyota-Sienna-rear.jpg', 'label' => 'Trasera'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/04/2023-Toyota-Sienna-interior.jpg', 'label' => 'Interior'],
-            ],
-        ],
-    ],
-    'vehiculo-lujo' => [
-        'nombre' => 'Vehículo de Lujo',
-        'subtitulo' => 'Premium • 2023',
-        'precio' => 200,
-        'badge' => 'PREMIUM',
-        'badgeColor' => '#c9a84c',
-        'rating' => 4.9,
-        'reviews' => 280,
-        'specs' => [
-            ['icon' => 'fa-horse-head', 'label' => 'POTENCIA', 'value' => '375 HP'],
-            ['icon' => 'fa-cog', 'label' => 'TRANSMISIÓN', 'value' => 'Automática'],
-            ['icon' => 'fa-gas-pump', 'label' => 'COMBUSTIBLE', 'value' => 'Gasolina'],
-            ['icon' => 'fa-users', 'label' => 'ASIENTOS', 'value' => '5 Adultos'],
-        ],
-        'amenidades' => [
-            'Interior de cuero premium',
-            'Suspensión adaptativa',
-            'Sistema de sonido envolvente',
-            'Pantalla de visualización frontal',
-            'Asientos con masaje',
-            'Asistente de visión nocturna',
-        ],
-        'imagenes' => [
-            'principal' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWfsR6cgnaq7nMEzpl-mjoAfMJ3gCGzUhq5A&s',
-            'thumbnails' => [
-                ['src' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWfsR6cgnaq7nMEzpl-mjoAfMJ3gCGzUhq5A&s', 'label' => 'Exterior'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/12/2023-Mercedes-Benz-S-Class-cabin.jpg', 'label' => 'Cabina'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/12/2023-Mercedes-Benz-S-Class-rear.jpg', 'label' => 'Trasera'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/12/2023-Mercedes-Benz-S-Class-interior.jpg', 'label' => 'Interior'],
-            ],
-        ],
-    ],
-    'convertible' => [
-        'nombre' => 'Convertible',
-        'subtitulo' => 'Convertible • 2023',
-        'precio' => 150,
-        'badge' => 'CONVERTIBLE',
-        'badgeColor' => '#e91e63',
-        'rating' => 4.7,
-        'reviews' => 390,
-        'specs' => [
-            ['icon' => 'fa-horse-head', 'label' => 'POTENCIA', 'value' => '300 HP'],
-            ['icon' => 'fa-cog', 'label' => 'TRANSMISIÓN', 'value' => 'Automática'],
-            ['icon' => 'fa-gas-pump', 'label' => 'COMBUSTIBLE', 'value' => 'Gasolina'],
-            ['icon' => 'fa-users', 'label' => 'ASIENTOS', 'value' => '2 Adultos'],
-        ],
-        'amenidades' => [
-            'Techo retráctil rígido',
-            'Escape deportivo',
-            'Asientos deportivos con soportes laterales',
-            'Deflector de viento',
-            'Sistema de sonido premium',
-            'Control de crucero adaptativo',
-        ],
-        'imagenes' => [
-            'principal' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR31WbMSju4OPRvW6t4dj8upKPJJG0g01jdHg&s',
-            'thumbnails' => [
-                ['src' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR31WbMSju4OPRvW6t4dj8upKPJJG0g01jdHg&s', 'label' => 'Exterior'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/08/2023-BMW-Z4-cabin.jpg', 'label' => 'Cabina'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/08/2023-BMW-Z4-rear.jpg', 'label' => 'Trasera'],
-                ['src' => 'https://www.motortrend.com/uploads/2022/08/2023-BMW-Z4-interior.jpg', 'label' => 'Interior'],
-            ],
-        ],
-    ],
-];
+// views/ReservaCatalogo/views/reservas.php
 
-// Obtener el vehículo seleccionado
-$carId = isset($_GET['car']) ? $_GET['car'] : null;
-$vehiculo = $carId && isset($vehiculos[$carId]) ? $vehiculos[$carId] : null;
+if (!defined('APP_ROOT')) define('APP_ROOT', '/Sistema_RentACar');
+if (!function_exists('asset')) {
+  function asset($path = '') { return APP_ROOT . '/' . ltrim($path, '/'); }
+}
+
+if (!defined('ROOT_PATH')) define('ROOT_PATH', dirname(__DIR__, 3));
+require_once ROOT_PATH . '/config/db.php';
+
+$pdo = Database::connect();
+
+function getVehicleColumns(PDO $pdo): array {
+  $stmt = $pdo->prepare("
+    SELECT COLUMN_NAME
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'tbvehiculos'
+  ");
+  $stmt->execute();
+  return array_map(fn($r) => strtolower($r['COLUMN_NAME']), $stmt->fetchAll());
+}
+
+function pickCol(array $cols, array $candidates): ?string {
+  foreach ($candidates as $c) {
+    if (in_array(strtolower($c), $cols, true)) return $c;
+  }
+  return null;
+}
+
+function vehicleGallery(int $id): array {
+  $baseDir = ROOT_PATH . '/assets/img/vehiculos/';
+  $baseUrl = asset('assets/img/vehiculos/');
+  $exts = ['jpg','jpeg','png','webp'];
+
+  $out = [];
+  for ($i = 1; $i <= 4; $i++) {
+    foreach ($exts as $ext) {
+      $file = $baseDir . $id . "_$i." . $ext;
+      if (file_exists($file)) { $out[] = $baseUrl . $id . "_$i." . $ext; break; }
+    }
+  }
+  if (empty($out)) $out[] = asset('assets/img/placeholder-car.jpg');
+  return $out;
+}
+
+$carId = isset($_GET['car_id']) ? (int)$_GET['car_id'] : 0;
+$vehiculo = null;
+$imagenes = [];
+
+if ($carId > 0) {
+  $cols = getVehicleColumns($pdo);
+
+  $colMarca  = pickCol($cols, ['marca']);
+  $colModelo = pickCol($cols, ['modelo']);
+  $colYear   = pickCol($cols, ['year','anio','año']);
+  $colPrecio = pickCol($cols, ['precio_dia','precio_por_dia','precio']);
+  $colDesc   = pickCol($cols, ['descripcion','descripción','detalle','detalles']);
+  $colTipo   = pickCol($cols, ['tipo_vehiculo', 'categoria', 'tipo']);
+
+  $select = [];
+  $select[] = "v.id_vehiculo";
+  $select[] = $colMarca  ? "v.`$colMarca`  AS marca"  : "NULL AS marca";
+  $select[] = $colModelo ? "v.`$colModelo` AS modelo" : "NULL AS modelo";
+  $select[] = $colYear   ? "v.`$colYear`   AS year"   : "NULL AS year";
+  $select[] = $colPrecio ? "v.`$colPrecio` AS precio_dia" : "0 AS precio_dia";
+  $select[] = $colDesc   ? "v.`$colDesc`   AS descripcion" : "NULL AS descripcion";
+  if ($colTipo) {
+    $select[] = "v.`$colTipo` AS tipo";
+  } else {
+    $select[] = "NULL AS tipo";
+  }
+
+  $stmt = $pdo->prepare("
+    SELECT " . implode(",\n", $select) . "
+    FROM tbvehiculos v
+    WHERE v.id_vehiculo = :id
+    LIMIT 1
+  ");
+  $stmt->execute([':id' => $carId]);
+  $vehiculo = $stmt->fetch();
+
+  if ($vehiculo) $imagenes = vehicleGallery($carId);
+}
 ?>
-
+<!DOCTYPE html>
+<html class="dark" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $vehiculo ? htmlspecialchars($vehiculo['nombre']) . ' | Reserva' : 'Reservas' ?> | GO CAR</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/Sistema_RentACar/assets/css/ReservaCatalogo/style.css">
-    <link rel="stylesheet" href="/Sistema_RentACar/assets/css/ReservaCatalogo/reservas.css">
-</head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><?= $vehiculo ? htmlspecialchars(trim(($vehiculo['marca'] ?? '').' '.($vehiculo['modelo'] ?? ''))) . ' | Reserva' : 'Reservas' ?> | GO CAR</title>
 
-<body>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#137fec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            display: ["Manrope", "sans-serif"]
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px"
+          },
+        },
+      },
+    }
+  </script>
+
+  <link rel="stylesheet" href="<?= asset('assets/css/client.css') ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/ReservaCatalogo/style.css') ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/ReservaCatalogo/reservas.css') ?>">
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white transition-colors duration-300">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+  <div class="layout-container flex h-full grow flex-col">
+    <!-- Navbar (puede ser tu archivo incluido) -->
     <?php include __DIR__ . '/../../layouts/navbar.php'; ?>
 
     <?php if ($vehiculo): ?>
-    <!-- 
-         PÁGINA DE RESERVA CON VEHÍCULO SELECCIONADO
-         -->
-    <section class="reservation-page py-5">
-        <div class="container">
-            <div class="row g-4">
+      <?php
+        $id       = (int)$vehiculo['id_vehiculo'];
+        $marca    = trim($vehiculo['marca'] ?? '');
+        $modelo   = trim($vehiculo['modelo'] ?? '');
+        $nombre   = trim($marca . ' ' . $modelo);
+        $anio     = $vehiculo['year'] ?? '';
+        $precio   = (float)($vehiculo['precio_dia'] ?? 0);
+        $desc     = $vehiculo['descripcion'] ?? '';
+        $tipo     = $vehiculo['tipo'] ?? 'Vehículo';
+        $imgPrincipal = $imagenes[0] ?? asset('assets/img/placeholder-car.jpg');
+      ?>
 
-                <!-- COLUMNA IZQUIERDA - Vehículo -->
-                <div class="col-lg-7">
+      <main class="flex flex-col items-center py-6 px-4 lg:px-40">
+        <div class="layout-content-container flex flex-col max-w-[1200px] w-full">
 
-                    <!-- Galería Principal -->
-                    <div class="vehicle-gallery">
-                        <div class="gallery-main">
-                            <span class="vehicle-badge"
-                                style="background: <?= $vehiculo['badgeColor'] ?>;"><?= $vehiculo['badge'] ?></span>
-                            <img src="<?= $vehiculo['imagenes']['principal'] ?>" class="gallery-main-img"
-                                alt="<?= htmlspecialchars($vehiculo['nombre']) ?> - Vista principal">
-                            <div class="gallery-dots">
-                                <?php foreach ($vehiculo['imagenes']['thumbnails'] as $i => $thumb): ?>
-                                <span class="dot <?= $i === 0 ? 'active' : '' ?>"></span>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                        <div class="gallery-thumbnails">
-                            <?php foreach ($vehiculo['imagenes']['thumbnails'] as $thumb): ?>
-                            <div class="thumbnail">
-                                <img src="<?= $thumb['src'] ?>" alt="<?= htmlspecialchars($thumb['label']) ?>">
-                                <span class="thumbnail-label"><?= htmlspecialchars($thumb['label']) ?></span>
-                            </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
+          <!-- Breadcrumbs -->
+          <div class="flex flex-wrap gap-2 py-4">
+            <a class="text-[#92adc9] hover:text-white text-sm font-medium leading-normal" href="<?= asset('index.php') ?>">Inicio</a>
+            <span class="text-[#92adc9] text-sm font-medium">/</span>
+            <a class="text-[#92adc9] hover:text-white text-sm font-medium leading-normal" href="<?= asset('index.php?v=catalogo') ?>">Catálogo</a>
+            <span class="text-[#92adc9] text-sm font-medium">/</span>
+            <a class="text-[#92adc9] hover:text-white text-sm font-medium leading-normal" href="#"><?= htmlspecialchars($tipo) ?></a>
+            <span class="text-[#92adc9] text-sm font-medium">/</span>
+            <span class="text-white text-sm font-medium leading-normal"><?= htmlspecialchars($nombre ?: "Vehículo #$id") ?></span>
+          </div>
 
-                    <!-- Info del Vehículo -->
-                    <div class="vehicle-info">
-                        <h2 class="vehicle-name"><?= htmlspecialchars($vehiculo['nombre']) ?></h2>
-                        <p class="vehicle-subtitle"><?= htmlspecialchars($vehiculo['subtitulo']) ?></p>
-                        <div class="vehicle-rating">
-                            <i class="fas fa-star"></i>
-                            <span class="rating-score"><?= $vehiculo['rating'] ?></span>
-                            <span class="rating-count">(<?= number_format($vehiculo['reviews']) ?> Reseñas)</span>
-                        </div>
-                    </div>
-
-                    <!-- Specs Técnicas -->
-                    <div class="specs-grid">
-                        <?php foreach ($vehiculo['specs'] as $spec): ?>
-                        <div class="spec-item">
-                            <div class="spec-icon">
-                                <i class="fas <?= $spec['icon'] ?>"></i>
-                            </div>
-                            <div class="spec-label"><?= $spec['label'] ?></div>
-                            <div class="spec-value"><?= $spec['value'] ?></div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <!-- Amenidades Incluidas -->
-                    <div class="amenities-section">
-                        <h4 class="amenities-title">Amenidades Incluidas</h4>
-                        <div class="amenities-grid">
-                            <?php foreach ($vehiculo['amenidades'] as $amenidad): ?>
-                            <div class="amenity-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span><?= htmlspecialchars($amenidad) ?></span>
-                            </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                    <!-- Calendario de Disponibilidad -->
-                    <div class="calendar-section">
-                        <h4 class="calendar-title">Calendario de Disponibilidad</h4>
-                        <div id="calendar-container">
-                            <div class="cal-nav">
-                                <button type="button" class="cal-nav-btn" id="calPrev">
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
-                                <span class="cal-month-label" id="calMonthLabel"></span>
-                                <button type="button" class="cal-nav-btn" id="calNext">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
-                            </div>
-                            <div class="cal-weekdays">
-                                <span>Lun</span><span>Mar</span><span>Mié</span>
-                                <span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
-                            </div>
-                            <div class="cal-days" id="calDays">
-                                <!-- JS renders days here -->
-                            </div>
-                            <div class="cal-legend">
-                                <span class="cal-legend-item">
-                                    <span class="cal-legend-dot cal-legend-available"></span> Disponible
-                                </span>
-                                <span class="cal-legend-item">
-                                    <span class="cal-legend-dot cal-legend-unavailable"></span> No disponible
-                                </span>
-                                <span class="cal-legend-item">
-                                    <span class="cal-legend-dot cal-legend-selected"></span> Seleccionado
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
+          <!-- Grid principal -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <!-- Columna izquierda: galería y detalles -->
+            <div class="lg:col-span-2 space-y-8">
+              <!-- Imagen principal -->
+              <div class="@container">
+                <div class="bg-cover bg-center flex flex-col justify-end overflow-hidden bg-[#111a22] rounded-xl min-h-[480px] shadow-2xl group relative"
+                     style="background-image: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 30%), url('<?= htmlspecialchars($imgPrincipal) ?>');">
+                  <div class="absolute top-4 left-4 bg-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><?= htmlspecialchars($tipo) ?></div>
+                  <div class="flex justify-center gap-2 p-5">
+                    <?php foreach ($imagenes as $i => $img): ?>
+                      <div class="size-2 rounded-full <?= $i === 0 ? 'bg-white' : 'bg-white opacity-40' ?>"></div>
+                    <?php endforeach; ?>
+                  </div>
                 </div>
+              </div>
 
-                <!-- COLUMNA DERECHA - Barra lateral de reserva -->
-                <div class="col-lg-5">
+              <!-- Miniaturas -->
+              <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="galleryThumbs">
+                <?php foreach ($imagenes as $i => $src): ?>
+                  <div class="flex flex-col gap-2 min-w-48 group cursor-pointer <?= $i === 0 ? '' : 'opacity-70 hover:opacity-100 transition-opacity' ?>"
+                       data-index="<?= $i ?>"
+                       onclick="document.querySelector('.bg-cover.bg-center').style.backgroundImage = 'linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 30%), url(\\'' + '<?= htmlspecialchars($src) ?>' + '\\')'; document.querySelectorAll('#galleryThumbs .ring-2').forEach(el => el.classList.remove('ring-2', 'ring-primary')); this.querySelector('div').classList.add('ring-2', 'ring-primary');">
+                    <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg <?= $i === 0 ? 'ring-2 ring-primary' : '' ?>"
+                         style="background-image: url('<?= htmlspecialchars($src) ?>');"></div>
+                    <p class="text-white text-sm font-medium text-center"><?= $i === 0 ? 'Principal' : 'Foto ' . ($i+1) ?></p>
+                  </div>
+                <?php endforeach; ?>
+              </div>
 
-                    <!-- Card de Reserva -->
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div class="booking-price">
-                                <span class="price-amount">$<?= $vehiculo['precio'] ?></span>
-                                <span class="price-period">/día</span>
-                            </div>
-                            <span class="instant-badge">RESERVA INSTANTÁNEA</span>
-                        </div>
-
-                        <form class="booking-form">
-                            <div class="form-group">
-                                <label class="form-label">UBICACIÓN DE RECOGIDA</label>
-                                <div class="input-with-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <select class="form-select">
-                                        <option>San Francisco International</option>
-                                        <option>San Salvador</option>
-                                        <option>Santa Ana</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="date-row">
-                                <div class="form-group">
-                                    <label class="form-label">FECHA INICIO</label>
-                                    <input type="date" class="form-control" value="2024-10-04">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">FECHA FIN</label>
-                                    <input type="date" class="form-control" value="2024-10-07">
-                                </div>
-                            </div>
-
-                            <div class="price-breakdown">
-                                <div class="price-line">
-                                    <span>$<?= $vehiculo['precio'] ?> x 3 días</span>
-                                    <span>$<?= number_format($vehiculo['precio'] * 3, 2) ?></span>
-                                </div>
-                                <div class="price-line">
-                                    <span>Seguro (Cobertura Total)</span>
-                                    <span>$45.00</span>
-                                </div>
-                                <div class="price-line">
-                                    <span>Tarifa de servicio</span>
-                                    <span>$12.50</span>
-                                </div>
-                                <div class="price-total">
-                                    <span>Total</span>
-                                    <span
-                                        class="total-amount">$<?= number_format(($vehiculo['precio'] * 3) + 45 + 12.50, 2) ?></span>
-                                </div>
-                            </div>
-
-                            <button type="button" class="btn-proceed" id="btnOpenPayment">
-                                Proceder al Pago <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </form>
-
-                        <div class="secure-notice">
-                            <i class="fas fa-lock"></i>
-                            <span>Pagos seguros y datos encriptados</span>
-                        </div>
-                        <p class="terms-text">
-                            Al proceder aceptas nuestros <a href="#">Términos de servicio</a> y <a href="#">Políticas de
-                                reembolso</a>.
-                        </p>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!--
-         MODAL DE PAGO
-         -->
-    <div class="payment-overlay" id="paymentOverlay">
-        <div class="payment-modal">
-
-            <!-- Paso 1: Formulario de pago -->
-            <div class="payment-step" id="paymentStep1">
-                <div class="payment-modal-header">
-                    <h3>Completa tu Pago</h3>
-                    <button class="payment-close" id="btnClosePayment">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-
-                <!-- Resumen del pedido -->
-                <div class="payment-summary">
-                    <div class="payment-summary-row">
-                        <span class="payment-summary-label">Vehículo</span>
-                        <span class="payment-summary-value"><?= htmlspecialchars($vehiculo['nombre']) ?></span>
-                    </div>
-                    <div class="payment-summary-row">
-                        <span class="payment-summary-label">Tarifa Diaria</span>
-                        <span class="payment-summary-value">$<?= $vehiculo['precio'] ?></span>
-                    </div>
-                    <div class="payment-summary-row payment-summary-total">
-                        <span>Total</span>
-                        <span>$<?= number_format(($vehiculo['precio'] * 3) + 45 + 12.50, 2) ?></span>
-                    </div>
-                </div>
-
-                <!-- Tabs de método de pago -->
-                <div class="payment-tabs">
-                    <button class="payment-tab active" data-method="card">
-                        <i class="fas fa-credit-card"></i> Tarjeta
-                    </button>
-                    <button class="payment-tab" data-method="paypal">
-                        <i class="fab fa-paypal"></i> PayPal
-                    </button>
-                    <button class="payment-tab" data-method="cash">
-                        <i class="fas fa-money-bill-wave"></i> Efectivo
-                    </button>
-                </div>
-
-                <!-- Formulario: Tarjeta de Crédito -->
-                <div class="payment-form" id="formCard">
-                    <div class="pf-group">
-                        <label>Número de Tarjeta</label>
-                        <div class="pf-input-icon">
-                            <i class="fas fa-credit-card"></i>
-                            <input type="text" placeholder="1234 5678 9012 3456" maxlength="19">
-                        </div>
-                    </div>
-                    <div class="pf-row">
-                        <div class="pf-group">
-                            <label>Fecha de Vencimiento</label>
-                            <input type="text" placeholder="MM/YY" maxlength="5">
-                        </div>
-                        <div class="pf-group">
-                            <label>CVV</label>
-                            <div class="pf-input-icon">
-                                <i class="fas fa-lock"></i>
-                                <input type="text" placeholder="123" maxlength="4">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="pf-group">
-                        <label>Nombre del Titular</label>
-                        <input type="text" placeholder="Juan Pérez">
-                    </div>
-                </div>
-
-                <!-- Formulario: PayPal -->
-                <div class="payment-form" id="formPaypal" style="display:none;">
-                    <div class="pf-group">
-                        <label>Correo de PayPal</label>
-                        <div class="pf-input-icon">
-                            <i class="fab fa-paypal"></i>
-                            <input type="email" placeholder="you@email.com">
-                        </div>
-                    </div>
-                    <p class="pf-note">Serás redirigido a PayPal para completar el pago.</p>
-                </div>
-
-                <!-- Formulario: Cash -->
-                <div class="payment-form" id="formCash" style="display:none;">
-                    <div class="cash-info">
-                        <i class="fas fa-info-circle"></i>
-                        <div>
-                            <p><strong>Pago en Recogida</strong></p>
-                            <p>Paga el monto total en efectivo al recoger el vehículo en la ubicación seleccionada.
-                                Puede aplicarse una tarifa de retención.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="btn-confirm-payment" id="btnConfirmPayment">
-                    <i class="fas fa-lock"></i> Confirmar Pago —
-                    $<?= number_format(($vehiculo['precio'] * 3) + 45 + 12.50, 2) ?>
-                </button>
-            </div>
-
-            <!-- Paso 2: Éxito -->
-            <div class="payment-step" id="paymentStep2" style="display:none;">
-                <div class="payment-success">
-                    <div class="success-icon">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <h3>¡Pago Exitoso!</h3>
-                    <p>Tu reserva para <strong><?= htmlspecialchars($vehiculo['nombre']) ?></strong> ha sido confirmada.
+              <!-- Título y detalles -->
+              <div class="flex flex-wrap justify-between items-end gap-3 border-b border-[#233648] pb-6">
+                <div class="flex flex-col gap-2">
+                  <h1 class="text-white text-5xl font-black leading-tight tracking-[-0.033em]"><?= htmlspecialchars($nombre ?: "Vehículo #$id") ?></h1>
+                  <div class="flex items-center gap-4">
+                    <p class="text-[#92adc9] text-lg font-normal">
+                      <?= htmlspecialchars($tipo) ?> • <?= htmlspecialchars($anio) ?>
                     </p>
-                    <div class="success-details">
-                        <div class="success-detail-row">
-                            <span>ID de Reserva</span>
-                            <span id="reservationId">#RC-0000</span>
-                        </div>
-                        <div class="success-detail-row">
-                            <span>Monto Pagado</span>
-                            <span>$<?= number_format(($vehiculo['precio'] * 3) + 45 + 12.50, 2) ?></span>
-                        </div>
+                    <div class="flex items-center gap-1 text-yellow-400">
+                      <span class="material-symbols-outlined text-sm fill-1">star</span>
+                      <span class="text-white font-bold text-sm">4.9</span>
+                      <span class="text-[#92adc9] text-xs font-normal">(124 reviews)</span>
                     </div>
-                    <button class="btn-confirm-payment" id="btnCloseSuccess">
-                        <i class="fas fa-check"></i> Listo
-                    </button>
+                  </div>
                 </div>
+              </div>
+
+              <!-- Especificaciones -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-[#1c2a38] p-4 rounded-xl border border-[#233648]">
+                  <span class="material-symbols-outlined text-primary mb-2">bolt</span>
+                  <p class="text-[#92adc9] text-xs uppercase font-bold tracking-widest">Potencia</p>
+                  <p class="text-white font-bold">-- HP</p>
+                </div>
+                <div class="bg-[#1c2a38] p-4 rounded-xl border border-[#233648]">
+                  <span class="material-symbols-outlined text-primary mb-2">settings_input_component</span>
+                  <p class="text-[#92adc9] text-xs uppercase font-bold tracking-widest">Transmisión</p>
+                  <p class="text-white font-bold">Automática</p>
+                </div>
+                <div class="bg-[#1c2a38] p-4 rounded-xl border border-[#233648]">
+                  <span class="material-symbols-outlined text-primary mb-2">local_gas_station</span>
+                  <p class="text-[#92adc9] text-xs uppercase font-bold tracking-widest">Combustible</p>
+                  <p class="text-white font-bold">Gasolina</p>
+                </div>
+                <div class="bg-[#1c2a38] p-4 rounded-xl border border-[#233648]">
+                  <span class="material-symbols-outlined text-primary mb-2">group</span>
+                  <p class="text-[#92adc9] text-xs uppercase font-bold tracking-widest">Capacidad</p>
+                  <p class="text-white font-bold">5 personas</p>
+                </div>
+              </div>
+
+              <!-- Descripción -->
+              <?php if (trim($desc) !== ''): ?>
+                <div class="space-y-4">
+                  <h3 class="text-xl font-bold">Descripción</h3>
+                  <p class="text-[#92adc9]"><?= nl2br(htmlspecialchars($desc)) ?></p>
+                </div>
+              <?php endif; ?>
+
+              <!-- Amenidades -->
+              <div class="space-y-4">
+                <h3 class="text-xl font-bold">Incluye</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-3">
+                  <div class="flex items-center gap-3 text-[#92adc9]">
+                    <span class="material-symbols-outlined text-green-500">check_circle</span>
+                    <span class="text-white">Aire acondicionado</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-[#92adc9]">
+                    <span class="material-symbols-outlined text-green-500">check_circle</span>
+                    <span class="text-white">Bluetooth</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-[#92adc9]">
+                    <span class="material-symbols-outlined text-green-500">check_circle</span>
+                    <span class="text-white">Cámara de reversa</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-[#92adc9]">
+                    <span class="material-symbols-outlined text-green-500">check_circle</span>
+                    <span class="text-white">Asientos de cuero</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Calendario placeholder -->
+              <div class="bg-[#1c2a38] p-6 rounded-xl border border-[#233648] space-y-4">
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg font-bold">Disponibilidad</h3>
+                  <div class="flex gap-4">
+                    <button class="p-1 hover:bg-[#233648] rounded"><span class="material-symbols-outlined">chevron_left</span></button>
+                    <p class="font-bold">Marzo 2026</p>
+                    <button class="p-1 hover:bg-[#233648] rounded"><span class="material-symbols-outlined">chevron_right</span></button>
+                  </div>
+                </div>
+                <p class="text-[#92adc9] text-sm">Consulta disponibilidad en el formulario de reserva.</p>
+              </div>
             </div>
 
-        </div>
-    </div>
+            <!-- Columna derecha: widget de reserva -->
+            <div class="lg:sticky lg:top-24">
+              <div class="bg-[#1c2a38] p-6 rounded-xl border border-[#233648] shadow-2xl space-y-6">
+                <div class="flex justify-between items-baseline">
+                  <p class="text-3xl font-black text-white">$<?= number_format($precio, 2) ?><span class="text-sm font-normal text-[#92adc9]"> / día</span></p>
+                  <p class="text-xs text-green-400 font-bold uppercase">Reserva instantánea</p>
+                </div>
+
+                <!-- Formulario de reserva -->
+                <form method="POST" action="procesar_reserva.php" class="space-y-4">
+                  <input type="hidden" name="car_id" value="<?= $id ?>">
+                  <input type="hidden" name="precio_dia" value="<?= $precio ?>">
+
+                  <div class="grid grid-cols-1 gap-4">
+                    <div class="space-y-1">
+                      <label class="text-xs font-bold text-[#92adc9] uppercase tracking-tighter">Ubicación de recogida</label>
+                      <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#92adc9] text-lg">location_on</span>
+                        <select name="ubicacion" class="w-full bg-[#111a22] border-none rounded-lg pl-10 text-sm h-12 focus:ring-1 focus:ring-primary" required>
+                          <option value="San Salvador">San Salvador</option>
+                          <option value="Santa Ana">Santa Ana</option>
+                          <option value="San Miguel">San Miguel</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                      <div class="space-y-1">
+                        <label class="text-xs font-bold text-[#92adc9] uppercase tracking-tighter">Fecha inicio</label>
+                        <input type="date" name="fecha_inicio" class="w-full bg-[#111a22] border-none rounded-lg text-sm h-12 focus:ring-1 focus:ring-primary" required>
+                      </div>
+                      <div class="space-y-1">
+                        <label class="text-xs font-bold text-[#92adc9] uppercase tracking-tighter">Fecha fin</label>
+                        <input type="date" name="fecha_fin" class="w-full bg-[#111a22] border-none rounded-lg text-sm h-12 focus:ring-1 focus:ring-primary" required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Desglose de precio -->
+                  <div class="pt-4 border-t border-[#233648] space-y-2">
+                    <div class="flex justify-between text-sm text-[#92adc9]">
+                      <span>$<?= number_format($precio, 2) ?> x <span id="dias">3</span> días</span>
+                      <span class="text-white" id="subtotal">$<?= number_format($precio * 3, 2) ?></span>
+                    </div>
+                    <div class="flex justify-between text-sm text-[#92adc9]">
+                      <span>Seguro (incluido)</span>
+                      <span class="text-white">$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm text-[#92adc9]">
+                      <span>Tarifa de servicio</span>
+                      <span class="text-white">$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-bold border-t border-[#233648] pt-3 mt-2">
+                      <span>Total</span>
+                      <span class="text-primary" id="total">$<?= number_format($precio * 3, 2) ?></span>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="w-full bg-primary hover:bg-primary/90 py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                    <span>Proceder al Pago</span>
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                  </button>
+                </form>
+
+                <div class="flex flex-col items-center gap-2 pt-2">
+                  <div class="flex items-center gap-1 text-[#92adc9] text-xs">
+                    <span class="material-symbols-outlined text-sm">security</span>
+                    <span>Pagos seguros y datos encriptados</span>
+                  </div>
+                  <p class="text-[10px] text-[#445566] text-center">Cancelación gratuita hasta 48 horas antes. Sin cargos ocultos.</p>
+                </div>
+              </div>
+
+              <!-- Mapa miniatura -->
+              <div class="mt-6 rounded-xl overflow-hidden h-40 relative group">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAOxqmG6R1F1L_xz9kyN0qULWo_oPad-u87sOhZMAd6rqp7jVP8TLLh_z9OBJBLuron8ubJelleMO4WzrEmCjhqV7lfDPTv1bIsabdM9dBdLIZ2OIeXBogOmqPYTo4OnhoB7L4V3146D3Zj3lS9T4s8F5MKhXy40nAW7mwU0Ywp-6Nj_pGGiP-XqZIM2LgcBDto048ga_KgjTp3imP4SsVlVSoWj4-psA_Qg9jmdDf5-6ThdZkvT_L3SIH8RZu48HPUCNPeDzsZ_DzT');"></div>
+                <div class="absolute inset-0 bg-background-dark/20 group-hover:bg-transparent transition-colors"></div>
+                <div class="absolute bottom-2 right-2 bg-background-dark/80 px-2 py-1 rounded text-[10px] flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">map</span> Ver mapa
+                </div>
+              </div>
+            </div>
+          </div> <!-- fin grid principal -->
+        </div> <!-- fin layout-content-container -->
+      </main>
+
+      <!-- FOOTER (fuera del contenedor con ancho máximo) -->
+      <?php include __DIR__ . '/../../layouts/footer.php'; ?>
 
     <?php else: ?>
-    <!-- 
-         PÁGINA SIN VEHÍCULO SELECCIONADO
-         -->
-    <section class="reservation-page py-5">
-        <div class="container">
-            <div class="no-vehicle-selected">
-                <div class="no-vehicle-icon">
-                    <i class="fas fa-car"></i>
-                </div>
-                <h2>No has seleccionado un vehículo</h2>
-                <p>Para hacer una reserva, primero elige un vehículo de nuestro catálogo.</p>
-                <a href="/Sistema_RentACar/views/ReservaCatalogo/views/catalogo.php" class="btn-go-catalog">
-                    <i class="fas fa-th-large"></i> Ir al Catálogo
-                </a>
-            </div>
+      <!-- Mensaje cuando no hay vehículo seleccionado -->
+      <main class="flex flex-col items-center py-6 px-4 lg:px-40">
+        <div class="layout-content-container max-w-[1200px] w-full">
+          <div class="bg-[#1c2a38] p-8 rounded-xl border border-[#233648] text-center">
+            <span class="material-symbols-outlined text-6xl text-[#92adc9] mb-4">directions_car</span>
+            <h2 class="text-2xl font-bold mb-2">No has seleccionado un vehículo</h2>
+            <p class="text-[#92adc9] mb-6">Para hacer una reserva, primero elige un vehículo de nuestro catálogo.</p>
+            <a href="<?= asset('index.php?v=catalogo') ?>" class="inline-block bg-primary hover:bg-primary/90 px-6 py-3 rounded-lg font-bold transition-colors">
+              <i class="fas fa-th-large mr-2"></i> Ir al Catálogo
+            </a>
+          </div>
         </div>
-    </section>
+      </main>
+      <!-- Footer también en caso de error -->
+      <footer class="mt-20 py-10 border-t border-[#233648] bg-background-light dark:bg-background-dark w-full">
+        <div class="max-w-[1200px] mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+          <!-- mismo contenido que arriba, o puedes incluir footer.php -->
+          <div class="col-span-1 md:col-span-2 space-y-4">
+            <div class="flex items-center gap-3 text-primary">
+              <div class="size-6">
+                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
+                </svg>
+              </div>
+              <h2 class="text-white text-lg font-bold">GoCar Rent A Car</h2>
+            </div>
+            <p class="text-[#92adc9] text-sm max-w-sm">Experience the future of mobility...</p>
+          </div>
+          <!-- ... resto del footer ... -->
+        </div>
+      </footer>
     <?php endif; ?>
 
-    <?php include __DIR__ . '/footer.php'; ?>
+  </div> <!-- fin layout-container -->
+</div> <!-- fin relative -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/Sistema_RentACar/assets/js/ReservaCatalogo/script.js"></script>
+<!-- Script para cálculo dinámico de días y total -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const fechaInicio = document.querySelector('input[name="fecha_inicio"]');
+    const fechaFin = document.querySelector('input[name="fecha_fin"]');
+    const diasSpan = document.getElementById('dias');
+    const subtotalSpan = document.getElementById('subtotal');
+    const totalSpan = document.getElementById('total');
+    const precioDia = <?= $precio ?? 0 ?>;
+
+    function actualizarPrecio() {
+      if (fechaInicio && fechaFin && fechaInicio.value && fechaFin.value) {
+        const inicio = new Date(fechaInicio.value);
+        const fin = new Date(fechaFin.value);
+        const diffTime = fin - inicio;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays > 0) {
+          const subtotal = precioDia * diffDays;
+          diasSpan.textContent = diffDays;
+          subtotalSpan.textContent = '$' + subtotal.toFixed(2);
+          totalSpan.textContent = '$' + subtotal.toFixed(2);
+        } else {
+          diasSpan.textContent = '0';
+          subtotalSpan.textContent = '$0.00';
+          totalSpan.textContent = '$0.00';
+        }
+      }
+    }
+
+    if (fechaInicio && fechaFin) {
+      fechaInicio.addEventListener('change', actualizarPrecio);
+      fechaFin.addEventListener('change', actualizarPrecio);
+      // Ejecutar una vez para establecer valores iniciales
+      actualizarPrecio();
+    }
+  });
+</script>
+
+<!-- Script para la galería (opcional, ya está inline) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="<?= asset('assets/js/client-ui.js') ?>"></script>
+<script src="<?= asset('assets/js/ReservaCatalogo/reservas.js') ?>"></script>
 </body>
-
 </html>

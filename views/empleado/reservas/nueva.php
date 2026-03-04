@@ -1,8 +1,8 @@
 <?php
 $titulo = 'Nueva Reserva';
 $seccion = 'reservas';
-include PROJECT_ROOT_FS . '/views/empleado/layouts/header.php';
-include PROJECT_ROOT_FS . '/views/empleado/layouts/navbar.php';
+include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_header.php';
+include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_navbar.php';
 ?>
 <div class="container-fluid mt-4">
     <div class="row mb-4">
@@ -107,4 +107,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php include PROJECT_ROOT_FS . '/views/empleado/layouts/footer.php'; ?>
+<?php include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_footer.php'; ?>

@@ -1,7 +1,9 @@
 <?php
-// index.php - Router principal
+// index.php - Punto de entrada principal
+
 session_start();
 
+// Definir constantes
 define('PROJECT_ROOT_FS', __DIR__);
 define('BASE_URL', '/Sistema_RentACar'); // Ajusta si tu proyecto está en otra ruta
 
@@ -11,18 +13,17 @@ if (!function_exists('url')) {
     }
 }
 
-// Determinar el área (admin, empleado, cliente)
-$area = $_GET['area'] ?? 'admin'; // por defecto admin
-
+// ============================================
+// DETECCIÓN DE PARÁMETROS DE RUTA
+// ============================================
+$area      = $_GET['area'] ?? null;
 $controller = $_GET['controller'] ?? null;
-$action     = $_GET['action']     ?? 'index';
-$vista      = $_GET['v']           ?? null; // para vistas antiguas (solo admin)
+$action     = $_GET['action'] ?? 'index';
+$vista      = $_GET['v'] ?? null;
 
 // ============================================
 // MAPEO DE CONTROLADORES POR ÁREA
 // ============================================
-
-// Administradores (y superadmin)
 $adminControllers = [
     'Auth'          => 'AuthController',
     'GoogleAuth'    => 'GoogleAuthController',
@@ -41,9 +42,8 @@ $adminControllers = [
     'AsistenciaAdmin'=> 'AsistenciaAdminController',
 ];
 
-// Empleados (rol operador)
 $empleadoControllers = [
-    'Auth'               => 'AuthController', // mismo que admin
+    'Auth'               => 'AuthController',
     'GoogleAuth'         => 'GoogleAuthController',
     'DashboardEmpleado'  => 'DashboardEmpleadoController',
     'ClientesEmpleado'   => 'ClientesEmpleadoController',
@@ -52,34 +52,75 @@ $empleadoControllers = [
     'DevolucionEmpleado' => 'DevolucionEmpleadoController',
     'ChecklistEmpleado'  => 'ChecklistEmpleadoController',
     'MantenimientosEmpleado' => 'MantenimientosEmpleadoController',
-    'PerfilEmpleado'     => 'PerfilEmpleadoController',
-    'AsistenciaAdmin'    => 'AsistenciaAdminController',
-    'ContratosEmpleado' => 'ContratosEmpleadoController',
-    'DevolucionEmpleado' => 'DevolucionEmpleadoController',
-'ChecklistEmpleado'  => 'ChecklistEmpleadoController',
-    
+    'PerfilEmpleado'     => 'PerfilEmpleadoController',   // ← Agregado
+    'ContratosEmpleado'  => 'ContratosEmpleadoController',
 ];
 
-// Clientes (rol cliente)
 $clienteControllers = [
     'Auth'          => 'AuthClienteController',
     'GoogleAuth'    => 'GoogleAuthController',
     'Catalogo'      => 'CatalogoController',
     'Reservas'      => 'ReservasClienteController',
     'Perfil'        => 'PerfilClienteController',
+    'Cliente'       => 'ClienteController',
 ];
+
+// ============================================
+// INTELIGENCIA DE RUTAS: Si no hay área pero sí controlador, deducir por sesión
+// ============================================
+if (!$area && $controller) {
+    if (isset($_SESSION['admin_logged']) && $_SESSION['admin_logged'] === true) {
+        // Es admin/empleado
+        if (isset($adminControllers[$controller])) {
+            $area = 'admin';
+        } elseif ($_SESSION['admin_rol'] === 'operador' && isset($empleadoControllers[$controller])) {
+            $area = 'empleado';
+        }
+    } elseif (isset($_SESSION['cliente_logged']) && $_SESSION['cliente_logged'] === true) {
+        // Es cliente
+        if (isset($clienteControllers[$controller])) {
+            $area = 'cliente';
+        }
+    }
+    // Si no se pudo determinar, $area sigue siendo null y se manejará después
+}
+
+// ============================================
+// SI NO HAY PARÁMETROS, REDIRIGIR SEGÚN SESIÓN
+// ============================================
+if (!$area && !$controller && !$vista) {
+    // No se pidió ninguna ruta específica
+    if (isset($_SESSION['cliente_logged']) && $_SESSION['cliente_logged'] === true) {
+        // Cliente logueado: ir a home del cliente
+        header('Location: ' . url('views/ReservaCatalogo/views/home.php'));
+        exit;
+    } else {
+        // Visitante: mostrar página de bienvenida pública
+        include __DIR__ . '/views/public/welcome.php';
+        exit;
+    }
+}
+
+// ============================================
+// SI AÚN NO HAY ÁREA, PERO HAY CONTROLADOR O VISTA, REDIRIGIR A LOGIN (SEGURIDAD)
+// ============================================
+if (!$area && ($controller || $vista)) {
+    // No se pudo determinar el área, probablemente falta autenticación
+    header('Location: ' . url('index.php?area=admin&controller=Auth&action=login'));
+    exit;
+}
 
 // ============================================
 // ÁREA ADMIN
 // ============================================
 if ($area === 'admin') {
-    // Si no hay controlador ni vista, redirigir al login o dashboard
-    if (!$controller && !$vista) {
+    // Si no hay controlador, redirigir al dashboard o login
+    if (!$controller) {
         if (isset($_SESSION['admin_logged']) && $_SESSION['admin_logged'] === true) {
-            header('Location: ' . url('index.php?controller=Dashboard&action=index'));
+            header('Location: ' . url('index.php?area=admin&controller=Dashboard&action=index'));
             exit;
         } else {
-            header('Location: ' . url('index.php?controller=Auth&action=login'));
+            header('Location: ' . url('index.php?area=admin&controller=Auth&action=login'));
             exit;
         }
     }
@@ -105,17 +146,18 @@ if ($area === 'admin') {
             die("Vista no encontrada.");
         }
     } else {
-        header('Location: ' . url('index.php?controller=Auth&action=login'));
+        header('Location: ' . url('index.php?area=admin&controller=Auth&action=login'));
         exit;
     }
 }
+
 // ============================================
 // ÁREA EMPLEADO
 // ============================================
 elseif ($area === 'empleado') {
-    // Verificar sesión de empleado (rol operador)
+    // Verificar sesión de empleado: debe tener admin_logged y rol 'operador'
     if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_logged'] !== true || $_SESSION['admin_rol'] !== 'operador') {
-        header('Location: ' . url('index.php?controller=Auth&action=login'));
+        header('Location: ' . url('index.php?area=admin&controller=Auth&action=login'));
         exit;
     }
 
@@ -145,14 +187,22 @@ elseif ($area === 'empleado') {
 // ÁREA CLIENTE
 // ============================================
 elseif ($area === 'cliente') {
-    // Aquí asumimos que los clientes tienen su propia sesión (cliente_logged)
-    if (!isset($_SESSION['cliente_logged']) || $_SESSION['cliente_logged'] !== true) {
+    // Acciones que no requieren sesión
+    $accionesPublicas = ['login', 'registro', 'registrar', 'callback'];
+
+    // Si la acción NO es pública y el usuario no está logueado, redirigir al login
+    if (!in_array($action, $accionesPublicas) && (!isset($_SESSION['cliente_logged']) || $_SESSION['cliente_logged'] !== true)) {
         header('Location: ' . url('index.php?area=cliente&controller=Auth&action=login'));
         exit;
     }
 
+    // Si no se especifica controlador, redirigir según sesión
     if (!$controller) {
-        header('Location: ' . url('index.php?area=cliente&controller=Catalogo&action=index'));
+        if (isset($_SESSION['cliente_logged']) && $_SESSION['cliente_logged'] === true) {
+            header('Location: ' . url('index.php?area=cliente&controller=Catalogo&action=index'));
+        } else {
+            header('Location: ' . url('index.php?area=cliente&controller=Auth&action=login'));
+        }
         exit;
     }
 
@@ -174,9 +224,10 @@ elseif ($area === 'cliente') {
     }
 }
 // ============================================
-// ÁREA DESCONOCIDA
+// ÁREA NO VÁLIDA
 // ============================================
 else {
-    die("Área no válida.");
+    // Si se proporcionó un área no válida o ningún área pero sí otros parámetros
+    header('Location: ' . url(''));
+    exit;
 }
-?>

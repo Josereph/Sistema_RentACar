@@ -1,8 +1,8 @@
 <?php
 $titulo = 'Checklist de Inspección';
 $seccion = 'checklist';
-include PROJECT_ROOT_FS . '/views/empleado/layouts/header.php';
-include PROJECT_ROOT_FS . '/views/empleado/layouts/navbar.php';
+include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_header.php';
+include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_navbar.php';
 
 $devolucion = $devolucion ?? null;
 $items      = $items ?? [];
@@ -15,4 +15,4 @@ $id_devolucion = $devolucion['id_devolucion'] ?? ($_GET['id_devolucion'] ?? null
         <!-- ... -->
     </form>
 </div>
-<?php include PROJECT_ROOT_FS . '/views/empleado/layouts/footer.php'; ?>
+<?php include PROJECT_ROOT_FS . '/views/empleado/layouts/empleado_footer.php'; ?>
